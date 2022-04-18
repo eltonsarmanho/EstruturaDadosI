@@ -10,7 +10,7 @@ if __name__ == '__main__':
     for value in n:
         f.append(value*1000)
         g.append(value * value)
-    print(f)
+
     df = pd.DataFrame(
         {'n_values':n,
          'f_values': f,
