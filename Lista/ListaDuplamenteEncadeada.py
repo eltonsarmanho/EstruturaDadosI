@@ -6,14 +6,19 @@
 class DoublyNode:
     def __init__(self, data):
         self.data = data
-        self.next = None
-        self.prev = None
+        self.next = None #proximo
+        self.prev = None #anterior
 
 class DoublyLinkedList:
+
     def __init__(self):
-        self.head = None
+        self.head = None #L.inicio
 
     def append(self, data):
+        """
+        Add elemento no final da lista duplamente encadeada
+        :rtype: object
+        """
         new_node = DoublyNode(data)
         if self.head is None:
             self.head = new_node
@@ -24,7 +29,30 @@ class DoublyLinkedList:
         current.next = new_node
         new_node.prev = current
 
+    def list_insert(self,data):
+        x = DoublyNode(data);
+        # Se lista vazia entao inserir no Inicio
+        if self.head is None:
+            self.head = x
+            return;
+        x.next = self.head;
+        if self.head != None:
+            self.head.prev = x;
+        self.head = x
+        x.prev = None
+
+    def list_search(self,k):
+        current = self.head; #x = L.inicio
+        while current != None and current.data != k:
+            current = current.next; #x = x.proximo
+        return current;
+
+
     def print_list(self):
+        """
+        Printa a lista duplamente encadeada na tela.
+        :rtype: object
+        """
         current = self.head
         while current:
             print(current.data)
@@ -36,3 +64,9 @@ if __name__ == '__main__':
     doubly_linked_list.append("B")
     doubly_linked_list.append("C")
     doubly_linked_list.print_list()
+    result = doubly_linked_list.list_search('B')
+    print(result)
+    doubly_linked_list.list_insert("Z");
+    doubly_linked_list.list_insert("W");
+    doubly_linked_list.print_list()
+
