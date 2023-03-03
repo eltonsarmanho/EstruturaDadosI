@@ -29,6 +29,32 @@ class DoublyLinkedList:
         current.next = new_node
         new_node.prev = current
 
+    def remove(self, key):
+        current = self.head
+
+        # Caso 1: Remoção do primeiro nó
+        if current is not None and current.data == key:
+            if current.next is not None:
+                current.next.prev = None
+            self.head = current.next
+            current = None
+            return
+
+        # Caso 2: Remoção do último nó
+        while current is not None and current.data != key:
+            current = current.next
+
+        if current is not None and current.next is None:
+            current.prev.next = None
+            current = None
+            return
+
+        # Caso 3: Remoção de um nó no meio da lista
+        if current is not None:
+            current.prev.next = current.next
+            current.next.prev = current.prev
+            current = None
+            return
     def list_insert(self,data):
         x = DoublyNode(data);
         # Se lista vazia entao inserir no Inicio
