@@ -7,7 +7,7 @@ class Nodo:
 
 class ListaDuplamenteEncadeada:
     def __init__(self):
-        self.inicio = None;
+        self.inicio = None;#L.inicio = Nullo - Lista Vazia
 
     def list_search(self,k):
         x = self.inicio;
@@ -61,7 +61,7 @@ if __name__ == '__main__':
     lista.list_insert("C")
     lista.print_list()
     result = lista.list_search('B')
-    print(result)
-    lista.list_delete("A")
+    print("Processa Remocao de B")
+    lista.list_delete("B")
     lista.print_list()
 

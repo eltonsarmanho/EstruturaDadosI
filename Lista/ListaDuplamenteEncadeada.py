@@ -72,8 +72,6 @@ class DoublyLinkedList:
         while current != None and current.data != k:
             current = current.next; #x = x.proximo
         return current;
-
-
     def print_list(self):
         """
         Printa a lista duplamente encadeada na tela.
@@ -92,7 +90,7 @@ if __name__ == '__main__':
     doubly_linked_list.print_list()
     result = doubly_linked_list.list_search('B')
     print(result)
-    doubly_linked_list.list_insert("Z");
-    doubly_linked_list.list_insert("W");
-    doubly_linked_list.print_list()
+    #doubly_linked_list.list_insert("Z");
+    #doubly_linked_list.list_insert("W");
+    #doubly_linked_list.print_list()
 
