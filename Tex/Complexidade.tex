@@ -1,0 +1,1275 @@
+\documentclass{beamer}
+\setbeamerfont{headline}{size=\footnotesize}
+
+\mode<presentation>{
+\usetheme{Montpellier}
+\setbeamercovered{transparent}
+\usecolortheme{lsc}
+}
+
+\mode<handout>{
+  % tema simples para ser impresso
+  \usepackage[bar]{beamerthemetree}
+   % Colocando um fundo cinza quando for gerar transparências para serem impressas
+  % mais de uma transparência por página
+  \beamertemplatesolidbackgroundcolor{black!5}
+}
+
+
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18} % Or your current version
+\usetikzlibrary{arrows.meta, positioning, shapes, calc, fit, backgrounds, shadows}
+\usepackage{amsmath,amssymb}
+\usepackage[brazil]{varioref}
+\usepackage[english,brazil]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{fontawesome}
+\usepackage{tikz}
+%\usepackage[latin1]{inputenc}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{url}
+\usepackage{colortbl}
+\usepackage{caption}
+\usepackage{tikz}
+\usepackage{transparent}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{listings}
+\lstloadlanguages{Python}
+\lstset{
+  language=Python,
+  basicstyle=\scriptsize\sffamily,
+  numberstyle=\color{gray},
+  stringstyle=\color[HTML]{933797},
+  commentstyle=\color[HTML]{228B22}\sffamily,
+  emph={[2]from,import,pass,return}, emphstyle={[2]\color[HTML]{DD52F0}},
+  emph={[3]range}, emphstyle={[3]\color[HTML]{D17032}},
+  emph={[4]for,in,def}, emphstyle={[4]\color{blue}},
+  showstringspaces=false,
+  breaklines=true,
+  prebreak=\mbox{{\color{gray}\tiny$\searrow$}},
+  numbers=left,
+  xleftmargin=15pt
+}
+\input{commands}
+
+\beamertemplatetransparentcovereddynamic
+\addtobeamertemplate{title page}{\centering{ \includegraphics[width=1.25cm]{figs/logo.png}}}{}
+\title[Estrutura de Dados I]{Complexidade de Algoritmos}
+\author[Elton Sarmanho]{ 
+Professor: Elton Sarmanho\inst{1} 
+\newline
+E-mail: \href{mailto:eltonss@ufpa.br}{eltonss@ufpa.br}\newline
+\href{https://github.com/eltonsarmanho}{\faGithub} \href{https://www.linkedin.com/in/elton-sarmanho-836553185/}{\faLinkedinSquare}
+}   
+  \institute[UFPA]{
+   \inst{1}%
+     Faculdade de Sistemas de Informação - UFPA/CUTINS
+     }     
+ 
+% Se comentar a linha abaixo, irá aparecer a data quando foi compilada a apresentação  
+\date{\today}
+\pgfdeclareimage[height= 1.25 cm]{inf}{figs/logo.png}
+% pode-se colocar o LOGO assim
+\logo{{\transparent{0.35}\pgfuseimage{inf}}}
+
+% \AtBeginSection[]{
+%   \begin{frame}<beamer>
+%     \frametitle{Roteiro}
+%     \tableofcontents[currentsection,currentsubsection]
+%   \end{frame}  
+% }
+\setbeamertemplate{navigation symbols}{\insertframenavigationsymbol \insertsectionnavigationsymbol \insertbackfindforwardnavigationsymbol} 
+\newcounter{saveenumi}
+\newcommand{\seti}{\setcounter{saveenumi}{\value{enumi}}}
+\newcommand{\conti}{\setcounter{enumi}{\value{saveenumi}}}
+
+\expandafter\def\expandafter\insertshorttitle\expandafter{%
+  \insertshorttitle\hfill%
+  \insertframenumber\,/\,\inserttotalframenumber}
+\begin{document}
+\setbeamertemplate{logo}{}
+\begin{frame}
+\titlepage
+\end{frame}
+%Começar mostrar Logo apos slide de titulo
+\logo{{\transparent{0.35}\pgfuseimage{inf}}}
+
+\begin{frame}
+\frametitle{Roteiro}
+\tableofcontents[sections={1-2}]
+\end{frame}
+\begin{frame}
+\frametitle{Roteiro}
+\tableofcontents[sections={3-4}]
+\end{frame}
+%Declaração das Imagens da Apresentação
+\pgfdeclareimage[width= 3.5 in]{fig1}{figs/industriaJogos.png}%
+\pgfdeclareimage[width= 3.5 in]{fig11}{figs/industriaJogos.png}%
+\pgfdeclareimage[width= 3.5 in, height = 2.25 in]{fig2}{figs/arquiteturaGeral.png}%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Análise Assintótica de Algoritmos}
+\subsection{Objetivos}
+\begin{frame}{}
+    
+\begin{itemize}
+ \item \hspace{-1 pt}Esta aula apresenta conceitos gerais sobre complexidade de algoritmos. Ao final, você deverá compreender os seguintes tópicos:
+ \begin{itemize}
+  \item Entender e compreender a importância de medir desempenho do algoritmo.
+  \item Saber medir desempenho de um algoritmo através da Anotação assintótica.
+  \end{itemize} 
+\end{itemize}
+\end{frame}
+\begin{frame}{}
+    
+\begin{itemize}
+ \item Esta aula apresenta conceitos gerais sobre complexidade de algoritmos:
+ \begin{itemize}
+  \item Dados e TAD's
+  \item Crescimento de funções
+  \item Notações
+  \item Funções
+ \end{itemize}
+
+ 
+\end{itemize}
+
+\end{frame}
+\section{Tipos Abstratos de Dados}
+\subsection{Conceitos Gerais}
+\begin{frame}{}
+    
+\begin{itemize}
+\item Programas possuem tipos de dados que são característicos de cada implementação
+\begin{itemize}
+ \item Preciso definir claramente os \textbf{tipos de dados}
+\end{itemize}
+ \item Tipo de dados é um conjunto de valores munido de um conjunto de operações
+ \begin{itemize}
+  \item \emph{int, float, char e etc}
+ \end{itemize}
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{}
+    
+\begin{itemize}
+\item Um \textbf{Tipo Abstrato de Dados} (TAD) especifica um comportamento definido pelo usuário em termos de suas propriedades abstratas:
+\begin{itemize}
+ \item Descreve o \textbf{comportamento} de um objeto que \underline{independe} da sua implementação e \underline{linguaguem de programação}, unicamente através dessas propriedades abstratas
+\end{itemize}
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Características do TAD}
+    
+\begin{itemize}
+ \item Define o comportamento de um tipo de dado sem se preocupar com sua implementação.
+ \item Necessário uma representação concreta:
+ \begin{itemize}
+  \item Como TAD é implementado
+  \item como seus dados são manipulados com suas operações
+  
+ \end{itemize}
+\item Base da POO
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Implementação do TAD}
+    
+\begin{itemize}
+ \item Por exemplo, pode-se definir um TAD chamado \textbf{pilha}.
+ \item Nele os operadores seriam \textbf{inserção} e \textbf{remoção} da pilha, ocorrendo no topo da estrutura.
+ \item Os dados seriam elementos da pilha
+ \item A implementação é dependente das estruturas disponíveis na linguagem utilizada e de opções de modelagem (estruturas estáticas ou dinâmicas)
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Implementação do TAD}
+    
+\begin{itemize}
+ \item Considere uma aplicação que utilize uma lista
+ de inteiros. Poderíamos definir TAD Lista,
+com as seguintes operações 
+\begin{itemize}
+ \item Faça lista vazia
+ \item obtenha o primeiro elemento da lista; se a lista
+ estiver vazia, então retorne nulo;
+ \item insira um elemento na lista.
+\end{itemize}
+\item Há várias opções de estruturas de dados que permitem uma implementação eficiente para
+listas (por ex., o tipo estruturado arranjo).
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Implementação do TAD}
+    
+\begin{itemize}
+
+\item Cada operação do tipo abstrato de dados é
+ implementada como um procedimento na
+linguagem de programação escolhida
+\item Qualquer alteração na implementação do
+ TAD fica restrita à parte encapsulada, sem
+causar impactos em outras partes do código.
+\item Cada conjunto diferente de operações define
+ um TAD diferente, mesmo atuando sob um
+mesmo modelo matemático.
+\item A escolha adequada de uma implementação
+ depende fortemente das operações a serem
+realizadas sobre o modelo.
+\end{itemize}
+
+\end{frame}
+
+\section{Crescimento de funções}
+\subsection{Conceitos Gerais}
+\begin{frame}
+    \begin{itemize}
+     \item A complexidade de algoritmos é
+fundamental para projetar algoritmos eficientes.
+     \item Caracteriza a \textbf{complexidade de tempo} em função do tamanho da entrada (n)
+     \item um algoritmo assintoticamente mais eficiente é a melhor escolha para todas as entradas, \textbf{exceto as de tamanho pequeno}.
+     \begin{itemize}
+      \item Conta-se o número de operações
+consideradas relevantes realizadas pelo algoritmo e
+expressa-se esse número como uma função de $n$.
+\item Essas operações podem ser comparações, operações
+aritméticas, movimento de dados, etc
+\item permite analisar a complexidade de um algoritmo independente do
+ambiente computacional utilizado
+     \end{itemize}
+
+
+    \end{itemize}
+
+ \end{frame}
+
+ \begin{frame}{Pior caso, melhor caso, caso médio}
+\begin{itemize}
+ \item O número de operações realizadas por um determinado
+algoritmo pode depender da particular instância da
+entrada. Em geral interessa-nos o \textbf{pior caso}, i.e., o maior
+número de operações usadas para qualquer entrada de
+tamanho $n$.
+\item Análises também podem ser feitas para o \textbf{melhor caso} e o
+\textbf{caso médio}. Neste último, supõe-se conhecida uma certa
+distribuição da entrada.
+\end{itemize}
+
+ \end{frame}
+
+ 
+\subsection{Notação O}
+\begin{frame}
+    \begin{block}{Definição}
+     \begin{itemize}
+      \item Para uma dada função $g(n)$, denotamos $O(g(n))$ o conjunto de funções como:\\
+      $O(g(n)) = $ $\{ f(n):$ existem constantes positivas $c$ e $n_0$ tais que $0\leq f(n) \leq c\cdot g(n)$ para todo $n \geq n_0 \}$
+      %\item uma função $f(n)$ pertence ao conjunto $O(g(n))$ se existe uma constante positiva $c$ de forma que ela possa estar limitada por $c\cdot g(n)$ para um valor de $n$ suficientemente grande.
+      \item Dizemos que $f(n) \in O(g(n))$, porém podemos adotar $f(n) = O(g(n))$ (Abuso da notação de igualdade)
+      \item Na maiora dos casos estamos interessados no limite superior, pois queremos saber no pior caso, qual a complexidade de tempo
+     \end{itemize}
+
+    \end{block}
+
+ \end{frame}
+ 
+ \begin{frame}
+    \begin{columns}
+        \column{0.5\linewidth}
+        \footnotesize         
+        \begin{block}{}
+ 		\begin{itemize}
+ 		 \item Para todos os valores de $n$ à direita de $n_0$, o valor de $f(n)$ reside em $\mathbf{c.g(n)}$ ou abaixo desse
+ 		 \item A função $g(n)$ estabelece um limite Assintótico superior para $f(n)$
+ 		 \item Exemplo: $an+b = O(n^2)$
+ 		 \begin{itemize}
+ 		  \item Podemos pensar nessa equação como sendo $an+b \leq O(n^2)$ ou $an+b \in  O(n^2)$
+ 		  \item Pois a taxa de Crescimento linear \textbf{é menor ou igual} a taxa quadrática
+ 		 \end{itemize}
+
+ 		\end{itemize}
+
+
+ 		  \end{block} 
+      \column{0.6\linewidth}
+      \begin{tikzpicture}[scale=0.8, every node/.style={scale=0.8}]
+  \draw[->] (0,0) -- (6,0) node[right] {$n$};
+  \draw[->] (0,0) -- (0,4) node[above] {$f(n), g(n)$};
+  \draw[domain=0.5:5.5, smooth, variable=\x, blue, thick] plot ({\x}, {0.5*\x + 0.2}) node[right, xshift=2mm] {$f(n)$};
+  \draw[domain=0.5:5.5, smooth, variable=\x, red, thick] plot ({\x}, {0.7*\x}) node[above right, xshift=2mm] {$c \cdot g(n)$};
+  \draw[dashed] (1,0) node[below] {$n_0$} -- (1,2.3);
+  \node at (3,0.5) [align=center, text width=3cm] {$0 \le f(n) \le c \cdot g(n)$ \\ $\forall$ $n \ge n_0$};
+  \fill (1,0) circle (1.5pt);
+\end{tikzpicture}
+       
+        \end{columns}
+
+ \end{frame}
+
+
+\begin{frame}
+
+\begin{itemize}
+ \item Como abuso de notação, vamos sempre escrever $f(n) = O(g(n))$ ao invés de $f(n) \in O(g(n))$
+ \item Algoritmo 1: $f_1(n) = 2n^2 + 5n = O(n^2)$\\
+ Algoritmo 2: $f_2(n) = 500n + 400 = O(n)$
+ \begin{itemize}
+  \item Um polinômio de grau $d$ é de ordem $O(n^d)$. Como uma constante pode ser considerada como um polinômio de grau 0, logo dizemos que uma constante é $O(n^0) = O(1)$
+  \item Podemos descartar os termos de mais baixa ordem e coeficientes do termo de mais alta ordem
+ \end{itemize}
+
+\end{itemize}
+
+\end{frame}
+
+ \begin{frame}{Exemplos}
+    \begin{enumerate}
+     \item $n+5$ é $O(n)$?
+    \end{enumerate}
+\end{frame}
+ 
+ \begin{frame}{Exemplos}
+    \begin{enumerate}
+     \item $n+5$ é $O(n)$?
+     $$\text{Vamos encontrar } c \text{ e } n_0 $$
+
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{Exemplos}
+    \begin{enumerate}
+     \item $n+5$ é $O(n)$?
+     $$\text{Vamos encontrar } c \text{ e } n_0 $$
+     $$f(n) \leq c.n$$
+   
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{Exemplos}
+    \begin{enumerate}
+     \item $n+5$ é $O(n)$?
+     $$\text{Vamos encontrar } c \text{ e } n_0 $$
+     $$f(n) \leq c.n$$
+     $$n+5 \leq c.n$$
+   
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{Exemplos}
+    \begin{enumerate}
+     \item $n+5$ é $O(n)$?
+     $$\text{Vamos encontrar } c \text{ e } n_0 $$
+     $$f(n) \leq c.n$$
+     $$n+5 \leq c.n$$
+     $$5 \leq c.n - n$$
+     
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{Exemplos}
+    \begin{enumerate}
+     \item $n+5$ é $O(n)$?
+     $$\text{Vamos encontrar } c \text{ e } n_0 $$
+     $$f(n) \leq c.n$$
+     $$n+5 \leq c.n$$
+     $$5 \leq c.n - n$$
+     $$ c.n - n\geq 5$$
+     
+     \end{enumerate}
+\end{frame}
+
+\begin{frame}{Exemplos}
+    \begin{enumerate}
+     \item $n+5$ é $O(n)$?
+     $$\text{Vamos encontrar } c \text{ e } n_0 $$
+     $$f(n) \leq c.n$$
+     $$n+5 \leq c.n$$
+     $$5 \leq c.n - n$$
+     $$ c.n - n\geq 5$$
+     $$ n(c-1)\geq 5$$
+   
+    \end{enumerate}
+\end{frame}
+
+
+\begin{frame}{Exemplos}
+    \begin{enumerate}
+     \item $n+5$ é $O(n)$?
+     $$\text{Vamos encontrar } c \text{ e } n_0 $$
+     $$f(n) \leq c.n$$
+     $$n+5 \leq c.n$$
+     $$5 \leq c.n - n$$
+     $$ c.n - n\geq 5$$
+     $$ n(c-1)\geq 5$$
+     $$ n \geq \dfrac{5}{c-1}$$
+    
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{Exemplos}
+    \begin{enumerate}
+     \item $n+5$ é $O(n)$?
+     $$\text{Vamos encontrar } c \text{ e } n_0 $$
+     $$f(n) \leq c.n$$
+     $$n+5 \leq c.n$$
+     $$5 \leq c.n - n$$
+     $$ c.n - n\geq 5$$
+     $$ n(c-1)\geq 5$$
+     $$ n \geq \dfrac{5}{c-1}$$
+     $$c = 2 \text{ e } n_0 =  5$$
+     \seti
+    \end{enumerate}
+\end{frame}
+
+ \begin{frame}{Exemplos - Aluno}
+    \begin{enumerate}
+    \conti
+     \item $2n+10$ é $O(n)$ Qual valor de c e $n_0$ ?
+      \seti
+    \end{enumerate}
+\end{frame}
+
+% \begin{frame}{Exemplos}
+%     \begin{enumerate}
+%      \conti
+%      \item $2n^2+1$ é $O(n^2)$ Qual valor de c e $n_0$ ?
+%     \end{enumerate}
+% \end{frame}
+%
+% \begin{frame}{Exemplos}
+%     \begin{enumerate}
+%     \conti
+%      \item $2n^2+1$ é $O(n^2)$ Qual valor de c e $n_0$ ?
+%     \end{enumerate}
+% \end{frame}
+%
+%
+% \begin{frame}{Exemplos}
+%     \begin{enumerate}
+%     \conti
+%      \item $2n^2+1$ é $O(n^2)$ Qual valor de c e $n_0$ ?\\
+%      Preciso encontrar $c>0$ e $n_0 \geq 1$ tais que $2n^2+1 \leq c.n^2$ para $n \geq n_0$
+%     \end{enumerate}
+% \end{frame}
+%
+% \begin{frame}{Exemplos}
+%     \begin{enumerate}
+%     \conti
+%      \item $2n^2+1$ é $O(n^2)$ Qual valor de c e $n_0$ ?\\
+%      Preciso encontrar $c>0$ e $n_0 \geq 1$ tais que $2n^2+1 \leq c.n^2$ para $n \geq n_0$\\
+%      Estabelecendo que $2n^2+1 \leq (2+1).n^2$, podemos tomar $c=3$ e qualquer $n_0 \geq 1$
+%      \seti
+%     \end{enumerate}
+% \end{frame}
+%
+% \begin{frame}{Exemplos - Aluno}
+%     \begin{enumerate}
+%     \conti
+%      \item $3n^3+20n^2 + 6$ é $O(n^3)$ Qual valor de c e $n_0$ ?\\
+%      \seti
+%     \end{enumerate}
+% \end{frame}
+%
+% \begin{frame}{Exemplos}
+%     \begin{enumerate}
+%     \conti
+%     \item $3\log n + 3$ é $O(\log n)$ Qual valor de c e $n_0$ ?\\
+%
+%     \end{enumerate}
+% \end{frame}
+%
+% \begin{frame}{Exemplos}
+%     \begin{enumerate}
+%     \conti
+%     \item $3\log n + 3$ é $O(\log n)$ Qual valor de c e $n_0$ ?\\
+%      Vamos encontrar $c>0$ e $n_0 \geq 1$ tais que $3\log n + 3 \leq c.\log n$ para todo $n \geq n_0$
+%
+%     \end{enumerate}
+% \end{frame}
+%
+% \begin{frame}{Exemplos}
+%     \begin{enumerate}
+%     \conti
+%     \item $3\log n + 3$ é $O(\log n)$ Qual valor de c e $n_0$ ?\\
+%      Vamos encontrar $c>0$ e $n_0 \geq 1$ tais que $3\log n + 3 \leq c.\log n$ para todo $n \geq n_0$\\
+%      Note que $\mathbf{3\log n + 3 \leq (3+3).\log n}$ é verdade se $n > 1$ $(\log 1 = 0)$
+%     \end{enumerate}
+% \end{frame}
+%
+% \begin{frame}{Exemplos}
+%     \begin{enumerate}
+%     \conti
+%     \item $3\log n + 3$ é $O(\log n)$ Qual valor de c e $n_0$ ?\\
+%      Vamos encontrar $c>0$ e $n_0 \geq 1$ tais que $3\log n + 3 \leq c.\log n$ para todo $n \geq n_0$\\
+%      Note que $\mathbf{3\log n + 3 \leq (3+3).\log n}$ é verdade se $n > 1$ $(\log 1 = 0)$ \\
+%      Basta tomar $c=6$ e qualquer $n_0 \geq 2$
+%      \seti
+%     \end{enumerate}
+% \end{frame}
+%
+% \begin{frame}{Exemplos}
+%     \begin{enumerate}
+%     \conti
+%     \item $2^{n+4}$ é $O(2^n)$ Qual valor de c e $n_0$ ?\\
+%
+%     \end{enumerate}
+% \end{frame}
+%
+% \begin{frame}{Exemplos}
+%     \begin{enumerate}
+%     \conti
+%     \item $2^{n+4}$ é $O(2^n)$ Qual valor de c e $n_0$ ?\\
+%     Preciso que $c>0$ e $n_0 \geq 1$ tais que $2^{n+4} \leq c.2^n$ para todo $n \geq n_0$\\
+%     \end{enumerate}
+% \end{frame}
+%
+% \begin{frame}{Exemplos}
+%     \begin{enumerate}
+%     \conti
+%     \item $2^{n+4}$ é $O(2^n)$ Qual valor de c e $n_0$ ?\\
+%     Preciso que $c>0$ e $n_0 \geq 1$ tais que $2^{n+4} \leq c.2^n$ para todo $n \geq n_0$\\
+%     Veja que $2^{n+4} = 2^n.2^4 = 2^n.16$
+%     \end{enumerate}
+% \end{frame}
+%
+% \begin{frame}{Exemplos}
+%     \begin{enumerate}
+%     \conti
+%     \item $2^{n+4}$ é $O(2^n)$ Qual valor de c e $n_0$ ?\\
+%     Preciso que $c>0$ e $n_0 \geq 1$ tais que $2^{n+4} \leq c.2^n$ para todo $n \geq n_0$\\
+%     Veja que $2^{n+4} = 2^n.2^4 = 2^n.16$ \\
+%     Basta tomar $c=16$ e qualquer $n_0 \geq 1$
+%     \end{enumerate}
+% \end{frame}
+
+\begin{frame}<presentation:0>{Notação assintótica em equações e desigualdades}
+   \begin{itemize}
+    \item Temos que igualdade nesses casos é usada no sentido de ``representatividade''.
+    \item Um conjunto em uma fórmula representa uma função anônima naquele conjunto
+    \end{itemize}
+    \begin{block}{}
+     \begin{itemize}
+      \item $ f(n) = n^2 + O(n)$\\
+      Significa que existe uma função $h(n) \in O(n)$ de forma que $f(n) = n^2 + h(n)$
+     \end{itemize}
+    \end{block}
+
+
+\end{frame}
+
+\subsection{Notação $\Omega$}
+\begin{frame}
+    \begin{block}{Definição}
+     \begin{itemize}
+      \item Para uma dada função $g(n)$, denotamos $\Omega(g(n))$ o conjunto de funções como:\\
+      $\Omega(g(n)) = $ $\{ f(n):$ existem constantes positivas $c$ e $n_0$ tais que $0\leq  c\cdot g(n) \leq f(n)$ para todo $n \geq n_0 \}$
+      \item uma função $f(n)$ pertence ao conjunto $\Omega(g(n))$ se existe uma constante positiva $c$ de forma que ela possa estar limitada por $c\cdot g(n)$ para um valor de $n$ suficientemente grande.
+      \item Dizemos que $f(n) \in \Omega(g(n))$, porém podemos adotar $f(n) = \Omega(g(n))$ (Abuso da notação de igualdade)
+     \end{itemize}
+
+    \end{block}
+
+ \end{frame}
+ 
+\begin{frame}
+    \begin{columns}
+        \column{0.5\linewidth}
+        \footnotesize         
+        \begin{block}{}
+ 		\begin{itemize}
+ 		 \item Para todos os valores de $n$ à direita de $n_0$, o valor de $f(n)$ reside em $\mathbf{c.g(n)}$ ou acima desse
+ 		 \item A função $g(n)$ estabelece um limite Assintótico inferior para $f(n)$
+ 		 \item Exemplo: $2n^2+n = \Omega(n)$
+ 		 \begin{itemize}
+ 		  \item Podemos pensar nessa equação como sendo $2n^2+n \geq \Omega(n)$, ou seja, a taxa de Crescimento de $2n^2+n$ é \textbf{maior ou igual} a taxa de $n$
+ 		 \end{itemize}
+
+ 		\end{itemize}
+
+
+ 		  \end{block} 
+        \column{0.6\linewidth}
+       \begin{center}
+ \begin{tikzpicture}[scale=0.8, every node/.style={scale=0.8}]
+  \draw[->] (0,0) -- (6,0) node[right] {$n$};
+  \draw[->] (0,0) -- (0,4) node[above] {$f(n), g(n)$};
+  \draw[domain=0.5:5.5, smooth, variable=\x, blue, thick] plot ({\x}, {0.6*\x + 0.05}) node[right, xshift=2mm] {$f(n)$};
+  \draw[domain=0.5:5.5, smooth, variable=\x, red, thick] plot ({\x}, {0.4*\x + 0.3}) node[below right, xshift=2mm] {$c \cdot g(n)$};
+  \draw[dashed] (1.25,0) node[below] {$n_0$} -- (1.25,2.0);
+  \node at (3.5,3) [align=center, text width=3cm] {$0 \le c \cdot g(n) \le f(n)$ \\ $\forall$ $n \ge n_0$};
+  \fill (1.25,0) circle (1.5pt);
+\end{tikzpicture}
+\end{center}
+       
+        \end{columns}
+
+ \end{frame}
+
+ 
+  \begin{frame}
+    \begin{columns}
+        \column{0.5\linewidth}
+%         \begin{block}{Exemplo 1.}
+%         \begin{itemize}
+%          \item $\sqrt{n} = \Omega(\log(n))$\\
+%         \item Como $ c \cdot \log(n) \leq \sqrt{n}$ para $c > 0$
+%         \item Dizemos: ``Raiz de $n$ é, pelo menos, omega de $\log n$'' para um $n$ suficientemente grande
+%         \end{itemize}
+%
+%         \end{block}
+%         \column{0.5\linewidth}
+        \begin{block}{Exemplo 2}
+         \begin{itemize}
+          \item $6n^2 + n = \Omega(n)$ 
+          \item $6n^2+n \geq c.n$
+          \item $6n + 1 \geq c$
+          \item $6n \geq c-1$
+          \item $n \geq \dfrac{c-1}{6}$
+          \item Para $n_0 =  1$ temos de tomar $c=7$
+         \end{itemize}
+
+         
+        \end{block}
+
+        
+       
+        \end{columns}
+
+ \end{frame}
+ 
+ 
+ \subsection{Notação $\Theta$}
+\begin{frame}
+    \begin{block}{Definição}
+     \begin{itemize}
+      \item Para uma dada função $g(n)$, denotamos $\Theta(g(n))$ o conjunto de funções como:\\
+      $\Theta(g(n)) = $ $\{ f(n):$ existem constantes positivas $c_1,c_2$ e $n_0$ tais que $0\leq  c_1\cdot g(n) \leq f(n) \leq c_2\cdot g(n)$ para todo $n \geq n_0 \}$
+      \item uma função $f(n)$ pertence ao conjunto $\Theta(g(n))$ se existem constantes positiva $c_1$ e $c_2$ de forma que ela possa estar limitada por $c_1\cdot g(n)$ e $c_2\cdot g(n)$ para um valor de $n$ suficientemente grande.
+     
+     \end{itemize}
+
+    \end{block}
+
+ \end{frame}
+ 
+\begin{frame}
+    \begin{columns}
+        \column{0.5\linewidth}
+        \footnotesize         
+        \begin{block}{}
+ 		\begin{itemize}
+ 		 \item Para todos os valores de $n$ à direita de $n_0$, o valor de $f(n)$ reside em $\mathbf{c_1.g(n)}$ ou acima dele e $\mathbf{c_2.g(n)}$ ou abaixo dele.
+ 		 \item A função $g(n)$ estabelece um \textbf{limite Assintótico restrito} para $f(n)$
+ 		
+
+ 		\end{itemize}
+
+
+ 		  \end{block} 
+        \column{0.6\linewidth}
+       \begin{tikzpicture}[scale=0.8, every node/.style={scale=0.8}]
+  \draw[->] (0,0) -- (6,0) node[right] {$n$};
+  \draw[->] (0,0) -- (0,4.5) node[above] {$f(n), g(n)$};
+  \draw[domain=0.5:5.5, smooth, variable=\x, blue, thick] plot ({\x}, {0.5*\x + 0.5}) node[right, xshift=2mm] {$f(n)$};
+  \draw[domain=0.5:5.5, smooth, variable=\x, red, thick] plot ({\x}, {0.7*\x + 0.2}) node[above right, xshift=2mm] {$c_2 \cdot g(n)$};
+  \draw[domain=0.5:5.5, smooth, variable=\x, green!70!black, thick] plot ({\x}, {0.3*\x + 0.7}) node[below right, xshift=2mm] {$c_1 \cdot g(n)$};
+  \draw[dashed] (1.3,0) node[below] {$n_0$} -- (1.3,2.5);
+  \node at (3.5,4.5) [align=center, text width=4cm] {$0 \le c_1 \cdot g(n) \le f(n) \le c_2 \cdot g(n)$ \\ $\forall$ $n \ge n_0$};
+  \fill (1.3,0) circle (1.5pt);
+\end{tikzpicture}
+       
+        \end{columns}
+
+ \end{frame}
+\subsection{Notação Assintótica}
+
+\begin{frame}<presentation:0>
+
+\begin{itemize}
+ \item Como abuso de notação, vamos sempre escrever $f(n) = O(g(n))$ ao invés de $f(n) \in O(g(n))$
+ \item Algoritmo 1: $f_1(n) = 2n^2 + 5n = O(n^2)$\\
+ Algoritmo 2: $f_2(n) = 500n + 400 = O(n)$
+ \begin{itemize}
+  \item Um polinômio de grau $d$ é de ordem $O(n^d)$. Como uma constante pode ser considerada como um polinômio de grau 0, logo dizemos que uma constante é $O(n^0) = O(1)$
+  \item Podemos descartar os termos de mais baixa ordem e coeficientes do termo de mais alta ordem
+ \end{itemize}
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{limite superior}
+
+\begin{itemize}
+ \item Seja dado um problema, multiplicação de duas matrizes quadradas $n \times n$
+ \item Conhecemos um algoritmo para resolver este problema (pelo método trivial) de complexidade $O(n^3)$
+ \item Sabemos que a complexidade deste problema não deve superar $O(n^3)$, uma vez que existe um algoritmo que o resolve com essa complexidade.
+ \item O \textbf{limite superior} (\textit{upper bound}) deste problema é $O(n^3)$ 
+\begin{itemize}
+   \item \textbf{limite superior} de um problema pode mudar se alguém descobrir um outro algoritmo melhor
+\end{itemize}
+
+ \end{itemize}
+\begin{center}
+ \begin{tikzpicture}
+  \draw (1,0) -- ++(1,0) -- ++(1,0)
+  node[midway,above] {$O(n^3)$} -- ++(-6,0); 
+ 
+  \foreach \x in {2.5} 
+  \draw (\x,0) circle (3pt);
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+\begin{frame}{limite superior}
+
+\begin{itemize}
+ \item O algoritmo de Strassen reduziu a complexidade para $O(n^{\log 7})$. Então um novo limite superior é criado.
+\end{itemize}
+
+\begin{center}
+ \begin{tikzpicture}
+  \draw (1,0) -- ++(1,0) -- ++(1,0)
+  node[midway,above] {$O(n^3)$} -- ++(-6,0)  
+  node[midway,above] {$O(n^{\log 7})$} -- ++(2,0);
+  \foreach \x in {0,2.5} 
+  \draw (\x,0) circle (3pt);
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+\begin{frame}{limite superior}
+
+\begin{itemize}
+ \item O algoritmo de Strassen reduziu a complexidade para $O(n^{\log 7})$. Então um novo limite superior é criado.
+ \item Coppersmith e Winograd melhoraram ainda para $O(n^{2.376})$
+ \item Note que limite superior de um problema depende do algoritmo. Pode diminuir quando aparecer um algoritmo melhor.
+\end{itemize}
+
+\begin{center}
+ \begin{tikzpicture}
+  \draw (1,0) -- ++(1,0) -- ++(1,0)
+  node[midway,above] {$O(n^3)$} -- ++(-6,0)  
+  node[midway,above] {$O(n^{\log 7})$} -- ++(2,0)
+  node[midway,above] {$O(n^{2.376})$} -- ++(0,0);
+  \foreach \x in {-2,0,2.5} 
+  \draw (\x,0) circle (3pt);
+\end{tikzpicture}
+\end{center}
+\end{frame}
+ 
+\begin{frame}{Análise do uso da notação assintótica}
+
+\begin{itemize}
+ \item Para dois algoritmos, considere as funções de eficiência:
+ \begin{itemize}
+  \item $f(n) = 1000n$
+  \item $g(n) = n^2$
+ \end{itemize}
+\item $f$ é maior do que $g$ para valores pequenos de $n$
+\item $g$ cresce mais rapidamente e podemos observar que no ponto onde $n= 1.000$ ocorre a mudança de comportamento $ g > f$
+\item Conforme as notações vistas, se existe um $n_0$ a partir do qual $c
+\cdot f(n)$ é pelo menos tão grande quanto $g(n)$, então, desprezando os fatores constantes e considerando $n_0 =1000$ e $c = 1$:
+\begin{itemize}
+ \item $f(n) = O(n^2)$
+ \item O que mostra que para $n \geq 1000$, $n^2$ é um limitante superior para $f(n)$
+\end{itemize}
+
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Análise do uso da notação assintótica}
+\begin{tikzpicture}[scale=0.9]
+\begin{axis}[
+    xlabel={Entrada ($n$)},
+    ylabel={Operações},
+    xmin=0, xmax=2000,
+    ymin=0, ymax=4000000,
+    legend pos=north west,
+    grid=major,
+    width=1.1\textwidth, % Adjust width as needed
+    height=0.6\textwidth, % Adjust height as needed
+]
+    \addplot [domain=0:2000, samples=100, color=blue, thick] {1000*x} node[pos=0.8, pin={135:$f(n)=1000n$}] {};
+    \addlegendentry{$f(n) = 1000n$}
+    \addplot [domain=0:2000, samples=100, color=red, thick] {x^2} node[pos=0.7, pin={45:$g(n)$}] {};
+    \addlegendentry{$g(n) = n^2$}
+    \node[label={Interseção},pin=220:{Interseção em $n=1000$}] at (axis cs:1000,1000000) {};
+    \draw[dashed] (axis cs:1000,0) -- (axis cs:1000,1000000);
+\end{axis}
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Análise do uso da notação assintótica: Funções}
+
+\begin{center}
+ \includegraphics[bb=100 0 195 111,scale=1.1]{figs/Desempenho.png}
+ % Desempenho.png: 812x461 px, 300dpi, 6.87x3.90 cm, bb=0 0 195 111
+\end{center}
+
+
+\end{frame}
+
+\begin{frame}{Análise do uso da notação assintótica: Funções}
+
+\begin{description}
+ \item[Constante:]$\approx 1$
+ \begin{itemize}
+  \item Independente do tamanho de $n$, quantidade de operações executadas é uma quantidade fixa de vezes
+ \end{itemize}
+ \item [Logarítmica:]$\approx \log_b n $
+ \begin{itemize}
+  \item Típica de algoritmos que resolvem um problema transformando-o em problemas menores.
+  
+ \end{itemize}
+
+\item [Linear:]$\approx n$
+\begin{itemize}
+ \item Uma certa quantidade de operações é processada sobre cada um dos elementos de entrada
+ \item Situação ideal para quando é preciso processar entrada e obter $n$ elementos de saída
+\end{itemize}
+
+
+\end{description}
+\end{frame}
+
+\begin{frame}{Análise do uso da notação assintótica: Funções}
+
+\begin{description}
+ 
+
+\item [Log Linear(ou n-log-n):]$\approx n \cdot \log_b n$
+\begin{itemize}
+ \item São algoritmos que resolvem um problema transformando-o em
+problemas menores, resolvem cada um de forma independente e depois
+agrupam as soluções.
+\end{itemize}
+
+\item [Quadrática:]$\approx n^2$
+\begin{itemize}
+ \item ocorre quando os dados são processados aos pares, com laços de repetição aninhados
+ \item São úteis para solucionar problemas de tamanho relativamente
+pequeno.
+\end{itemize}
+
+\item [Exponencial e Fatorial:]$\approx a^n$ e $\approx n!$ 
+\begin{itemize}
+ \item Normalmente ocorre quando se usa uma solução de \textbf{força bruta}
+ \item não são úteis do ponto de vista prático
+\end{itemize}
+
+\end{description}
+\end{frame}
+
+\begin{frame}{Eficiência Assintótica}
+
+\begin{center}
+ \includegraphics[bb=0 0 1147 341,scale=0.25]{figs/EficienciaAssintotica0.png}
+ % EficienciaAssintotica0.png: 1147x341 px, 72dpi, 40.46x12.03 cm, bb=0 0 1147 341
+\end{center}
+
+
+
+\end{frame}
+
+
+\begin{frame}{Eficiência Assintótica}
+
+\begin{center}
+ \includegraphics[bb=0 0 205 73,scale=1.2]{figs/eficienciaAssintotica.png}
+ % eficienciaAssintotica.png: 856x304 px, 300dpi, 7.25x2.57 cm, bb=0 0 205 73
+\end{center}
+
+
+
+\end{frame}
+
+\begin{frame}{Eficiência Assintótica}
+\begin{tikzpicture}[scale=0.9]
+\begin{axis}[
+    xlabel={$n$},
+    ylabel={Número de Operações},
+    xmin=0, xmax=5.5,
+    ymin=0, ymax=35,
+    legend pos=north west,
+    grid=major,
+    width=0.9\textwidth,
+    height=0.6\textwidth,
+]
+    \addplot [domain=1:5, samples=50, color=blue, thick, mark=-] {2*x+1};
+    \addlegendentry{Algoritmo A: $2n+1$}
+    \addplot [domain=1:5, samples=50, color=red, thick, mark=-] {x^2+x+1};
+    \addlegendentry{Algoritmo B: $n^2+n+1$}
+    \addplot [domain=1:5, samples=2, color=green!70!black, thick, mark=t-] {4};
+    \addlegendentry{Algoritmo C: $4$}
+\end{axis}
+\end{tikzpicture}
+\end{frame}
+
+
+\begin{frame}{Medida de Complexidade}
+\begin{itemize}
+ \item Sejam 5 algoritmos $A_1$ a $A_5$ para resolver um mesmo problema, de complexidades diferentes. (Supomos que uma operação leva 1 ms para ser efetuada.)
+ \item $T_k(n)$ é a complexidade ou seja o número de operações que o algoritmo efetua para $n$ entradas
+\end{itemize}
+\begin{center}
+ \includegraphics[bb=0 0 348 65,scale=0.85]{figs/TabelaDesempenho.png}
+ % TabelaDesempenho.png: 1449x270 px, 300dpi, 12.27x2.29 cm, bb=0 0 348 65
+\end{center}
+
+
+\end{frame}
+
+\begin{frame}{Exercício}
+\begin{itemize}
+ \item Um algoritmo tradicional e muito utilizado possui complexidade $f(n) = n^{1.3}$ enquanto um algoritmo novo proposto é da ordem de $g(n) = n\cdot \log n$
+ \item Qual o melhor algoritmo ?
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Exercício}
+\begin{center}
+ \includegraphics[bb=0 0 224 148,scale=0.9]{figs/GraficoComparacaoFUncao.png}
+ % GraficoComparacaoFUncao.png: 933x618 px, 300dpi, 7.90x5.23 cm, bb=0 0 224 148
+\end{center}
+
+
+\end{frame}
+
+% \begin{frame}{Exercício}
+%
+% $$f(n) = \dfrac{n^{1.3}}{n} =  n^{0.3} $$
+% $$g(n) = \dfrac{n\log n}{n} = \log n $$
+%
+% $$	\forall n > 0 \text{ temos que } g(n) < f(n)$$.
+% \begin{center}
+% Uma vez que $f(n)$ cresce mais rapidamente do que $g(n)$\end{center}
+%
+% \end{frame}
+
+
+\begin{frame}{Dicas de análise na prática}
+
+\begin{itemize}
+ \item Se $f(n)$ for um polinômio de grau $d$ então $f(n)$ é $O(n^d)$
+ \begin{itemize}
+  \item despreze os termos de menor ordem
+  \item despreze os fatores constantes
+ \end{itemize}
+\item Use a menor classe de funções possível
+\begin{itemize}
+ \item 3n é $O(n)$ , ao invés de $3n$ é $O(3n)$ 
+\end{itemize}
+\item Use a expressão mais simples
+\begin{itemize}
+ \item $3n + 5$ é $O(n)$ , ao invés de $3n + 5$ é $O(3n)$
+\end{itemize}
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Analisando Algoritmo}
+
+\begin{description}
+ \item[Repetições]: o tempo de execução é pelo menos o tempo dos
+comandos dentro da repetição multiplicada pelo número de vezes que
+é executada.
+\begin{itemize}
+ \item Veja pseudo código abaixo é $O(n)$\\
+   \texttt{z = 1 \\
+   Para x de 1 Ate n Faca:\\
+        \hspace{1 cm}z = z * x}
+\end{itemize}
+
+\end{description}
+
+\end{frame}
+
+\begin{frame}{Analisando Algoritmo}
+
+\begin{description}
+ \item[Repetições aninhadas]: O processo de análise é realizado do processo mais interno ao externo
+\begin{itemize}
+ \item o tempo total é o tempo de execução dos comandos multiplicado pelo produto do tamanho de todas as repetições
+ \item Veja o exemplo a seguir em que é $O(n^2)$\\
+   \texttt{matriz = [n,n] \\
+   Para linha de 1 Ate n Faca:\\
+   \hspace{1 cm}Para coluna de 1 Ate n Faca:\\
+        \hspace{1.5 cm}printa(matriz[linha,coluna])}
+\end{itemize}
+
+\end{description}
+
+\end{frame}
+
+
+\begin{frame}{Analisando Algoritmo}
+
+\begin{description}
+ \item[Condições]: o tempo nunca é maior do que o tempo do teste entretanto considere \textbf{o tempo do maior} entre os comandos dentro do bloco do ``então'' e do ``senão''.
+\begin{itemize}
+ 
+ \item Veja o exemplo a seguir em que é $O(n)$. Devido segundo bloco ser maior Tempo de execução\\
+   \texttt{Se (x < y): \\
+   \hspace{1 cm}x = y + 1\\
+   Senao:\\
+   \hspace{1 cm}Para x de 1 Ate n Faca:\\
+        \hspace{1 cm}y = y + x * 2}
+\end{itemize}
+\end{description}
+
+\end{frame}
+
+
+\begin{frame}{Analisando Algoritmo}
+
+\begin{description}
+ \item[Chamadas à subrotinas]: a \textbf{subrotina deve ser analisada primeiro} e depois ter suas unidades de tempo incorporadas ao programa que a chamou.
+
+\end{description}
+
+\end{frame}
+
+\begin{frame}{Analisando Algoritmo - Exercício}
+
+\begin{center}
+ \includegraphics[bb=0 0 718 463,scale=0.31]{figs/AnaliseBuscaLinear.png}
+ % AnaliseBuscaLinear.png: 718x463 px, 72dpi, 25.33x16.33 cm, bb=0 0 718 463
+\end{center}
+
+
+\end{frame}
+
+\begin{frame}{Analisando Algoritmo - Exercício}
+
+\begin{center}
+ \includegraphics[bb=0 0 601 274,scale=.3]{figs/AnaliseCodigo_1.png}
+ % AnaliseCodigo_1.png: 601x274 px, 72dpi, 21.20x9.67 cm, bb=0 0 601 274
+\end{center}
+
+
+\end{frame}
+
+\begin{frame}{Analisando Algoritmo - Exercício}
+
+\begin{center}
+ \includegraphics[bb=0 0 601 274,scale=.3]{figs/AnaliseCodigo_1.png}
+ % AnaliseCodigo_1.png: 601x274 px, 72dpi, 21.20x9.67 cm, bb=0 0 601 274
+\end{center}
+
+
+\end{frame}
+
+\begin{frame}{Analisando Algoritmo - Exercício - Aluno}
+\begin{center}
+ \includegraphics[bb=0 0 225 178,scale=.8]{figs/AnaliseCodigo_2.png}
+ % AnaliseCodigo_2.png: 939x742 px, 300dpi, 7.95x6.28 cm, bb=0 0 225 178
+\end{center}
+
+
+
+\end{frame}
+%
+% \begin{frame}{Relações e Teorema}
+%
+%
+% \begin{center}
+%  \includegraphics[bb=0 0 1515 413,scale=0.2]{figs/Transitividade.png}
+%  % Transitividade.png: 1515x413 px, 72dpi, 53.45x14.57 cm, bb=0 0 1515 413
+% \end{center}
+%
+% \end{frame}
+%
+% \begin{frame}{Relações e Teorema}
+%
+% \begin{center}
+%  \includegraphics[bb=0 0 292 238,scale=.3]{figs/Reflexividade.png}
+%  % Reflexividade.png: 292x238 px, 72dpi, 10.30x8.40 cm, bb=0 0 292 238
+% \end{center}
+%
+%
+%
+% \end{frame}
+%
+% \begin{frame}{Relações e Teorema}
+%
+% \begin{center}
+%  \includegraphics[bb=0 0 810 386,scale=0.3]{figs/Simetria.png}
+%  % Simetria.png: 810x386 px, 72dpi, 28.58x13.62 cm, bb=0 0 810 386
+% \end{center}
+%
+%
+% \end{frame}
+%
+% \subsection{Notações $o$ e $\omega$: notações estritas}
+% \begin{frame}
+%  \begin{itemize}
+%  \item Similares com as notações O e $\Omega$. Porém, a desigualdade deve valer para \textbf{qualquer} constante c.
+%  \item Para $g(n)$, denotamos $o(g(n))$ o conjunto de funções:\\
+%  $o(g(n)): \{f(n)$ para qualquer $c>0$ e $n_0 > 0 $ tais que $0 \leq f(n) < c\cdot g(n)$ para todo $n \geq n_0$  $\}$
+%   \item Para $g(n)$, denotamos $\omega(g(n))$ o conjunto de funções:\\
+%  $\omega(g(n)): \{f(n)$ para qualquer $c>0$ e $n_0 > 0 $ tais que $0 \leq c\cdot g(n) < f(n)$ para todo $n \geq n_0$  $\}$
+%  \item $f(n) \in \omega(g(n))$ se e somente se $g(n) \in o(f(n))$
+% \end{itemize}
+% \end{frame}
+%
+% \begin{frame}
+%  \begin{itemize}
+%  \item Intuitivamente, na notação $o$, a função $f(n)$ torna-se insignificante em relação a $g(n)$ à medida que $n$ se aproxima do infinito, isto é:
+%  $$\lim_{n\rightarrow \infty} \dfrac{f(n)}{g(n)} = 0$$
+% \end{itemize}
+% \end{frame}
+%
+% \begin{frame}
+%  \begin{itemize}
+%  \item Intuitivamente, na notação $\omega$, a função $f(n)$ torna-se arbitrariamente grande em relação a $g(n)$ à medida que $n$ se aproxima do infinito, isto é:
+%  $$\lim_{n\rightarrow \infty} \dfrac{f(n)}{g(n)} = \infty$$
+% \end{itemize}
+% \end{frame}
+%
+% \begin{frame}
+%  \begin{itemize}
+%  \item Intuitivamente, na notação $\omega$, a função $f(n)$ torna-se arbitrariamente grande em relação a $g(n)$ à medida que $n$ se aproxima do infinito, isto é:
+%  $$\lim_{n\rightarrow \infty} \dfrac{f(n)}{g(n)} = \infty$$
+% \end{itemize}
+% \end{frame}
+%
+%
+% \begin{frame}
+%  \begin{itemize}
+%  \item Exemplo: $3n^2$ é $o(n^3)$
+%  \begin{itemize}
+%   \item Desprezando os coeficientes, $n^2$ é sempre menor que $n^3$ para um $n$ suficientemente grande, é preciso apenas determinar $n_0$ em função de $c$.
+%
+%  \end{itemize}
+%
+% \end{itemize}
+% \end{frame}
+%
+% \begin{frame}
+%  \begin{itemize}
+%  \item Exemplo: $3n^2$ é $o(n^3)$
+%  \begin{itemize}
+%   \item Desprezando as constantes, $n^2$ é sempre menor que $n^3$ para um $n$ suficientemente grande, é preciso apenas determinar $n_0$ em função de $c$.
+%   $$3n^2 < c.n^3$$
+%   $$3 < c.n$$
+%   $$\dfrac{3}{c} < c$$
+%   A desigualdade vale para $n_0 \geq 3$ e $c = 3$
+%  \end{itemize}
+%
+% \end{itemize}
+% \end{frame}
+%
+% \begin{frame}
+%  \begin{itemize}
+%  \item $2n^3$ é $o(n^3)$
+% \end{itemize}
+% \end{frame}
+%
+% \begin{frame}
+%  \begin{itemize}
+%  \item $2n^3$ é $o(n^3)$
+%  \begin{itemize}
+%   \item (Desprezando as constantes) não podemos dizer que $n^3$ é sempre menor que $n^3$ para um $n$ suficientemente grande.
+%  \end{itemize}
+%
+%
+% \end{itemize}
+% \end{frame}
+
+% \begin{frame}
+% \begin{block}{Exercícios de Anotação}
+% \problema Escrever as seguintes funções em notação $O$:\\
+% $n^3 – 1$; $n^2 + 2\log n$; $3n^n + 5\cdot 2^n $; $(n – 1)^n + n^{ n–1}$.
+% \end{block}
+%
+% \end{frame}
+
+\subsection{Trabalho 1 - Complexidade de Algoritmos}
+\begin{frame}
+ \begin{enumerate}
+  \item Implemente e calcule a complexidade dos algoritmos
+\begin{description}
+ \item[a)] Escreva um algoritmo para encontrar o maior elemento do
+Array de tamanho $n$.
+ \item[b)] Escreva um algoritmo para calcular exponenciação de $x^{y}$.
+ \item[c)] Escreva um algoritmo para verificar se palavra é palíndromo.
+ \end{description}
+%  \item  Prove $2^{n+1} = O (2^n)$ ? $2^{2n} = O(2^n)$ ?
+  \seti
+ \end{enumerate}
+
+\end{frame}
+
+\begin{frame}<presentation:0>
+\begin{enumerate}
+\conti
+ \item 
+Dois algoritmos A e B possuem complexidade $n^5$ e $2^n$, respectivamente. Você utilizaria o algoritmo B ao invés do A. Em qual caso? Exemplifique. 
+\seti
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}<presentation:0>
+
+\begin{enumerate}
+\conti
+\item Podemos dizer que o algoritmo abaixo é $O(n^2)$? Justifique.
+
+\begin{center}
+ \includegraphics[bb=0 0 676 255,scale=.4]{figs/AlgoritmoMaxMin.png}
+ % AlgoritmoMaxMin.png: 676x255 px, 72dpi, 23.85x9.00 cm, bb=0 0 676 255
+\end{center}
+
+\end{enumerate}
+
+\end{frame}
+
+
+
+\section{Referências Bibliográficas}
+\begin{frame}[t,allowframebreaks]
+\frametitle{Referências}
+%\bibliographystyle{amsalpha}
+%\bibliography{bibfile}
+\begin{thebibliography}{*}
+
+        \bibitem[A01]{A01} Lee K.D., Hubbard S. (2015) Trees. In: Data Structures and Algorithms with Python. Undergraduate Topics in Computer Science. Springer, Cham. Retrieved from \url{https://doi.org/10.1007/978-3-319-13072-9_6}
+        
+        \bibitem[A02]{A02}Hubbard, J. (2007). Schaum’s Outline sof Data Structures with Java. Retrieved from \url{http://www.amazon.com/Schaums-Outline-Data-Structures-Java/dp/0071476989}
+        
+        \bibitem[A03]{A03} Cormen, T. H., Leiserson, C. E., \& Stein, R. L. R. E. C. (2012). Algoritmos: teoria e prática. Retrieved from \url{https://books.google.com.br/books?id=6iA4LgEACAAJ}.
+        
+        \bibitem[A04]{A04} Ascenio, Ana Fernanda Gomes. Estrutura de dados: Algoritmos, análise da complexidade e implementações em Java e C++. São Paulo: Pearson Prentice Hall, 2010.
+        
+        \bibitem[A06]{A06} Szwarcfiter, Jayme Luiz. Estruturas de dados e seus algoritmos / Jayme Luiz Szwarcfiter, Lilian Markenzon. 3.ed. [Reimpr.]. - Rio de Janeiro : LTC, 2015.
+        \bibitem[A07]{A07} Capítulo 20: Árvores — documentação Aprenda Computação com Python 3.0 2009.1. Retrieved from  \url{https://mange.ifrn.edu.br/python/aprenda-com-py3/capitulo_20.html}
+\end{thebibliography}
+\end{frame}
+\section{}
+
+%remover logo
+\setbeamertemplate{logo}{}
+\begin{frame}
+\titlepage
+\end{frame}
+
+\end{document}

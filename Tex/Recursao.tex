@@ -1,0 +1,510 @@
+\documentclass{beamer}
+\setbeamerfont{headline}{size=\footnotesize}
+
+\mode<presentation>{
+\usetheme{Montpellier}
+\setbeamercovered{transparent}
+\usecolortheme{lsc}
+}
+
+\mode<handout>{
+  \usepackage[bar]{beamerthemetree}
+  \beamertemplatesolidbackgroundcolor{black!5}
+}
+
+\usepackage{amsmath,amssymb}
+\usepackage[brazil]{varioref}
+\usepackage[english,brazil]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{fontawesome}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,positioning,calc}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{url}
+\usepackage{colortbl}
+\usepackage{caption}
+\usepackage{transparent}
+\usepackage{multirow}
+
+\definecolor{pyString}{HTML}{933797}
+\definecolor{pyComment}{HTML}{228B22}
+\definecolor{pyEmph2}{HTML}{DD52F0}
+\definecolor{pyEmph3}{HTML}{D17032}
+
+\lstloadlanguages{Python}
+\lstset{
+  language=Python,
+  basicstyle=\scriptsize\sffamily,
+  numberstyle=\color{gray},
+  stringstyle=\color{pyString},
+  commentstyle=\color{pyComment}\sffamily,
+  emph={[2]from,import,pass,return}, emphstyle={[2]\color{pyEmph2}},
+  emph={[3]range}, emphstyle={[3]\color{pyEmph3}},
+  emph={[4]for,in,def}, emphstyle={[4]\color{blue}},
+  showstringspaces=false,
+  breaklines=true,
+  prebreak=\mbox{{\color{gray}\tiny$\searrow$}},
+  numbers=left,
+  xleftmargin=15pt
+}
+\input{commands}
+
+\beamertemplatetransparentcovereddynamic
+\addtobeamertemplate{title page}{\centering{ \includegraphics[width=1.25cm]{figs/logo.png}}}{}
+\title[Estrutura de Dados I]{Recursão}
+\author[Elton Sarmanho]{ 
+Professor: Elton Sarmanho\inst{1} 
+\newline
+E-mail: \href{mailto:eltonss@ufpa.br}{eltonss@ufpa.br}\newline
+\href{https://github.com/eltonsarmanho}{\faGithub} \href{https://www.linkedin.com/in/elton-sarmanho-836553185/}{\faLinkedinSquare}
+}   
+\institute[UFPA]{
+   \inst{1}%
+     Faculdade de Sistemas de Informação - UFPA/CUTINS
+}     
+ 
+\date{\today}
+\pgfdeclareimage[height= 1.25 cm]{inf}{figs/logo.png}
+\logo{{\transparent{0.35}\pgfuseimage{inf}}}
+
+\setbeamertemplate{navigation symbols}{\insertframenavigationsymbol \insertsectionnavigationsymbol \insertbackfindforwardnavigationsymbol} 
+\newcounter{saveenumi}
+\newcommand{\seti}{\setcounter{saveenumi}{\value{enumi}}}
+\newcommand{\conti}{\setcounter{enumi}{\value{saveenumi}}}
+
+\expandafter\def\expandafter\insertshorttitle\expandafter{%
+  \insertshorttitle\hfill%
+  \insertframenumber\,/\,\inserttotalframenumber}
+
+\begin{document}
+\setbeamertemplate{logo}{}
+\begin{frame}
+\titlepage
+\end{frame}
+%Começar mostrar Logo apos slide de titulo
+\logo{{\transparent{0.35}\pgfuseimage{inf}}}
+
+\begin{frame}
+\frametitle{Roteiro}
+\tableofcontents[sections={1-2}]
+\end{frame}
+
+\section{Conceitos Gerais}
+\subsection{Objetivos}
+\begin{frame}{Objetivos}
+\begin{itemize}
+    \item \textbf{Propósito geral:} Apresentar a recursividade e sua potencialidade na resolução de problemas complexos na Ciência da Computação.
+    \pause
+    \item Ao final desta aula, o aluno será capaz de:
+    \begin{itemize}
+        \item Definir rigorosamente os conceitos de \textbf{caso base} e \textbf{passo indutivo} em algoritmos.
+        \pause
+        \item Distinguir cenários ideais para aplicar a estratégia recursiva em problemas práticos.
+        \pause
+        \item Formular relações de \textbf{recorrência} para delimitar complexidade (Abordagem de Divisão e Conquista).
+        \pause
+        \item Compreender desafios reais, incluindo recursões implícitas e problemas relativos à pilha de execução (Stack Overflow).
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+\subsection{Definição}
+\begin{frame}{O que é Recursão?}
+\begin{block}{Na Matemática}
+    Consiste em definir um objeto matemático (função, sequência ou conjunto) em termos da sua própria definição preestabelecida de forma encapsulada.
+\end{block}
+\pause
+\begin{block}{Na Computação}
+    É o mecanismo pelo qual uma sub-rotina (função, método procedimental) invoca intencionalmente a \textbf{si mesma} visando solucionar subproblemas progressivamente menores, até satisfazer uma condição trivial preexistente.
+\end{block}
+\pause
+\vspace{0.3cm}
+
+\end{frame}
+
+\begin{frame}{Pilares da Recursividade em Algoritmos}
+O avanço para a resolução de sistemas recursivos repousa necessariamente em duas bases axiomáticas:
+\pause
+\vspace{0.3cm}
+
+\begin{alertblock}{1. Caso Base (Condição de Ancora)}
+Demarcação onde o limite da rotina é alcançado. Quando atingida, emite uma resposta computável prontamente (convergência real), assegurando encerramento.
+\end{alertblock}
+\pause
+\begin{block}{2. Passo Indutivo}
+Caminho analítico reduzido de instâncias macro. A cada passo, o algoritmo gera dados que tendem iterativamente até encontrar o caso base.
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Exercício Lógico: Fatorial Matemático ($n!$)}
+
+Para dominar recursividade escalar, extraímos o primórdio produto de cadeias: 
+\begin{block}{Definição Recursiva Equacional}
+  \begin{equation*}
+  n! =
+    \begin{cases}
+      1, & \text{se } n = 0 \quad \text{(\textbf{Caso Base})}  \\      
+      n \cdot (n-1)!, & \text{se } n > 0 \quad \text{(\textbf{Passo de Indução})}
+    \end{cases}       
+  \end{equation*}
+\end{block}
+\pause
+\textbf{Implementação Computacional:}
+\begin{verbatim}
+def fatorial(n):
+    if n == 0:
+        return 1 
+    else:
+        return n * fatorial(n - 1)  
+\end{verbatim}
+\end{frame}
+
+\begin{frame}{Tratamento de Contexto: Pilha de Execução ({\it Call Stack})}
+Como o sistema preserva variáveis locais entre invocações? Todo compilador provisiona uma \textbf{Pilha (Stack)} para estruturar sucessões não resolvidas.
+\vspace{0.2cm}
+\begin{center}
+\begin{tikzpicture}[>=stealth, font=\small,
+    stacknode/.style={draw, rectangle, minimum width=3.2cm, minimum height=0.55cm, fill=blue!10}]
+    
+    % Base
+    \draw[thick, fill=gray!20] (-2.2,0) rectangle (2.2, 0.2);
+    
+    \node<2->[stacknode] (s1) at (0, 0.7) {\texttt{fatorial(3)} $\rightarrow 3 \times \textbf{?}$};
+    \node<3->[stacknode] (s2) at (0, 1.4) {\texttt{fatorial(2)} $\rightarrow 2 \times \textbf{?}$};
+    \node<4->[stacknode] (s3) at (0, 2.1) {\texttt{fatorial(1)} $\rightarrow 1 \times \textbf{?}$};
+    \node<5->[stacknode, fill=green!20] (s4) at (0, 2.8) {\texttt{fatorial(0)} $\rightarrow 1$};
+    
+    % Calls
+    \draw<3->[->, thick, blue] (2.0, 0.7) .. controls (2.6,0.9) and (2.6,1.2) .. (2.0, 1.4) node[midway, right] {chama};
+    \draw<4->[->, thick, blue] (2.0, 1.4) .. controls (2.6,1.6) and (2.6,1.9) .. (2.0, 2.1);
+    \draw<5->[->, thick, blue] (2.0, 2.1) .. controls (2.6,2.3) and (2.6,2.6) .. (2.0, 2.8);
+    
+    % Returns
+    \draw<8->[<-, thick, red] (-2.0, 0.7) .. controls (-2.6,0.9) and (-2.6,1.2) .. (-2.0, 1.4) node[midway, left] {rt: $6$};
+    \draw<7->[<-, thick, red] (-2.0, 1.4) .. controls (-2.6,1.6) and (-2.6,1.9) .. (-2.0, 2.1) node[midway, left] {rt: $2$};
+    \draw<6->[<-, thick, red] (-2.0, 2.1) .. controls (-2.6,2.3) and (-2.6,2.6) .. (-2.0, 2.8) node[midway, left] {rt: $1$};
+    
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+\begin{frame}{Múltipla Ramificação: Sequência de Fibonacci}
+Cálculos recursivos podem propagar expansões laterais massivas. Fibonacci exemplifica ramificação de profundidade.
+
+\vspace{0.2cm}
+\begin{block}{Relação de Recorrência}
+  \begin{equation*}
+   f(n) =
+    \begin{cases}
+      0, & \text{se } n = 0 \quad \text{(\textbf{Base A})}  \\
+      1, & \text{se } n = 1 \quad \text{(\textbf{Base B})}  \\
+      f(n-1) + f(n-2), & \text{se } n > 1 \quad \text{(\textbf{Bifurcação de Passo})}
+    \end{cases}        
+  \end{equation*}
+\end{block}
+\pause
+\begin{itemize}
+  \item Termos avaliados ($f(0)$ em diante):
+  $$0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55 \dots$$
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Desdobramento Assintótico: Árvore Fibonacci}
+Demonstrativo do Overlap (Superposição) Computacional $\implies O(2^n)$.
+\vspace{0.3cm}
+\begin{center}
+\begin{tikzpicture}[level distance=1.2cm, 
+   level 1/.style={sibling distance=3.5cm},
+   level 2/.style={sibling distance=1.5cm},
+   level 3/.style={sibling distance=0.8cm}, scale=0.9, transform shape]
+   
+\node {\texttt{f(4)}}
+  child {node {\texttt{f(3)}}
+    child {node {\texttt{f(2)}}
+      child {node {\texttt{f(1)}}}
+      child {node {\texttt{f(0)}}}
+    }
+    child {node[fill=red!20] {\texttt{f(1)}}}
+  }
+  child {node {\texttt{f(2)}}
+    child {node[fill=red!20] {\texttt{f(1)}}}
+    child {node[fill=gray!20] {\texttt{f(0)}}}
+  };
+\end{tikzpicture}
+\end{center}
+
+\end{frame}
+
+
+\subsection{Problemas em Recursividade}
+\begin{frame}{Avaliação Qualitativa: Omissões e Otimizações}
+
+
+\begin{itemize}
+ \item \textbf{Recursos de Cauda (\textit{Tail Recursion}):} Se a etapa induzida representar fundamentalmente a encerramento natural avaliado pelo ciclo isolado, sistemas contemporâneos convertem nativamente sob $O(1)$ \textit{em memórias} contornando a pilha.
+ \item \textbf{Vícios Axiomáticos:} Abertura recursiva com condicionalidade submetida incorretamente resulta por si em loop infinito.
+\end{itemize}
+\end{frame}
+
+
+\subsection{Trabalho 1 - Recursividade}
+\begin{frame}[allowframebreaks]{Trabalho Avaliativo - Domínio Modular}
+\begin{enumerate}
+ \item \textbf{Múltiplo Escalamento Marginal:} Implemente uma diretriz computacional rigorosamente recursiva visando recuperar sem iteração paralela, o mínimo absoluto (\text{menor elemento}) alocado sobre um grande vetor desornado.
+ 
+ \item \textbf{Segmentações Restritas:} Formule uma assinatura capaz de renderizar perfeitamente todas as partições (\textit{substrings contíguas}) provenientes de primitivas sequenciais puras. \\
+ Exemplo isolado à constante $S \equiv \text{dog}$:
+ $$| d | \ do \ | \ dog \ | \ o \ | \ og \ | \ g |$$
+ 
+ \item \textbf{Manipulação Indutiva Discreta:} Analise a sucessão processual subjacente a representação $g_1 \dots g_n$ perante um parâmetro demarcador universal $k$:
+  \begin{equation}
+  g_j =
+    \begin{cases}
+      j-1 & \textbf{se } \: 1 \leq j \leq k   \\
+      g_{j-1}+g_{j-2} & \textbf{se } \: j > k  \\
+    \end{cases}       
+  \end{equation}
+ Elabore um algoritmo logico com base nessa expressão matemática.
+\end{enumerate}
+\end{frame}
+
+
+\section{Recorrências}
+\subsection{Conceito Computacional}
+\begin{frame}{Compreendendo Recorrências em Algoritmos}    
+\footnotesize
+A teoria analítica repousa fortemente no dimensionamento explícito de processos autodescritos via formulações restritivas.
+
+\begin{block}{Formalização Clássica}
+Consistem de formulações matemáticas parametrizadas regidas sobre a entrada que especificam \textbf{tempo ou recursos limitantes} expressos nos domínios marginais subsequentes da própria recursão:
+$$T(n) = T(n-1) + \Theta(1)$$
+\end{block}
+\pause
+\begin{itemize}
+ \item \textbf{Presença Essencial:} Predominam na validação métrica da tríade recursiva (Dividir, Resolver, Combinar) como MergeSort.
+ \item \textbf{Abordagens Propostas:} Visam isolar matematicamente expressões absolutas $\Theta(\dots)$ eliminando chamadas cíclicas relativas ao próprio \textit{T()}.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Gabaritos Universais: Classificadores Clássicos}    
+  \footnotesize
+
+Revisitando matrizes temporais padrão de mercado na Ciência Computacional Básica:
+\pause
+\begin{description}
+ \item[$T(n) = T(n-1) + \Theta(1) \implies O(n)$] 
+ \hfill \break Extração serial exaure apenas passo elementar (Buscas desordenadas).
+ \pause
+ \item[$T(n) = T(n-1) + n \implies O(n^2)$] 
+ \hfill \break Varreduras residuais lineares repetidas perante extração paralela fracionada.
+ \pause
+ \item[$T(n) = T(n/2) + c \implies \Theta(\log n)$] 
+ \hfill \break Segmentação simétrica com triagem binária restrita constante (Buscadores Diretos).
+ \pause
+ \item[$T(n) = 2T(n/2) + n \implies \Theta(n \log n)$] 
+ \hfill \break Ramificações paralelas onde as fusões custam um empenho linear absoluto sobre o nível arbóreo correspondente.
+\end{description}
+\end{frame}
+
+\subsection{Modelagem: Busca Binária}
+\footnotesize
+
+% \begin{frame}{Pesquisa Binária (Dicotômica): Transcrição Analítica}    
+% Ao procurarmos $x$ uniformizado sobre as instâncias $A[lo \dots hi]$, observamos a restrição radical a uma meta seccionada.
+
+% \vspace{0.4cm}
+% \begin{center}
+% \begin{tikzpicture}[font=\small, scale=0.8, transform shape]
+%     % Array full
+%     \draw (0,0) grid (10,1);
+%     \node at (5, 1.3) {Amostragem Bruta Dimensional: $n$ ($lo \dots hi$)};
+    
+%     % Array split
+%     \draw<2->[fill=blue!10] (0,-1.5) grid (5,-0.5);
+%     \draw<2->[fill=gray!20] (5,-1.5) grid (10,-0.5);
+%     \draw<2->[->, thick, red] (5,-0.5) -- (5,0);
+%     \node<2-> at (5, -0.2) {$mid = \lfloor \frac{lo+hi}{2} \rfloor$};
+    
+%     % Narrow down
+%     \node<3->[align=left, text width=7cm] at (5, -2.5) {Considerando meta estatística inferior as margens preestabelecidas sobre o $mid$, \textbf{descartamos e focamos restritamente lateral esquerda} da árvore de dados reduzida perfeitamente pela aproximação fator $\frac{n}{2}$.};
+    
+%     \draw<4->[fill=red!20] (2.5,-4) grid (5,-3);
+%     \draw<4->[->, thick] (2.5,-3) -- ++(0,1);
+% \end{tikzpicture}
+% \end{center}
+
+% \vspace{0.3cm}
+% \onslide<5->{
+% \textbf{Modelo Gerado:}  $T(n) = T(n/2) + c \quad \text{e} \quad T(1) = 1$
+% }
+% \end{frame}
+
+
+\subsection{Método da Iteração}
+\begin{frame}{Método Avançado por Substituição (Desdobramento)}    
+\footnotesize
+
+Baseia-se no colapso paramétrico gradual almejando identificar séries progressivas subjacentes. Assumindo modelo primário: $\mathbf{T(n) = T\left(\frac{n}{2}\right) + c}$
+
+\pause
+\vspace{0.3cm}
+\textbf{Expansão Passo-a-Passo:}
+\begin{align*}
+ T(n) &= \mathbf{T(n/2)} + c \onslide<3->{= \mathbf{\left[T(n/4) + c\right]} + c} \\
+      &\onslide<4->{= \mathbf{T(n/2^2) + 2c}} \\
+      &\onslide<5->{= \mathbf{\left[T(n/8) + c\right]} + 2c = \mathbf{T(n/2^3) + 3c}} \\
+      &\onslide<6->{\implies \dots \\}
+      &\onslide<7->{= \mathbf{T(n/2^k) + c \cdot k} \quad \text{(Equação Genérica de pulso } k\text{)}}
+\end{align*}
+\end{frame}
+
+
+\begin{frame}{Isolamento da Variável $k$ em Escala Base}    
+\footnotesize
+
+Assumindo que nossa âncora de saída (Condição Base) processa arranjos iteracionais triviais de tamanho 1, inferimos $\mathbf{T(1) = 1}$.
+\pause
+\begin{block}{Buscando convergência $n/2^k = 1$}
+\begin{align*}
+  \frac{n}{2^k} &= 1 \onslide<3->{\ \implies\  n = 2^k} \\
+  &\onslide<4->{\implies\  \log_2 (n) = \log_2 (2^k)} \\
+  &\onslide<5->{\implies\  k = \log_2 n}
+\end{align*}
+\end{block}
+
+\pause[6]
+Retornando o valor $k$, finalizamos para as iterações da Pesquisa:
+$$T(n) = T(1) + c \cdot (\log_2 n)$$
+\begin{alertblock}{Conclusão Assintótica}
+O Algoritmo opera quantitativamente por custo marginal rigoroso $\mathbf{\Theta(\log n)}$.
+\end{alertblock}
+\end{frame}
+
+
+\subsection{Árvore de Recursão}
+\begin{frame}{Projeção Fractal: Árvore de Recursão Clássica}    
+
+Ferramenta visualmente proeminente aplicável aos \textit{design} de algoritmos Divisão-e-Conquista modelados na essência $\mathbf{T(n) = 2T(n/2) + \Theta(n)}$.
+\pause
+\begin{center}
+\begin{tikzpicture}[level distance=1.1cm, 
+   level 1/.style={sibling distance=3.5cm},
+   level 2/.style={sibling distance=1.5cm},
+   level 3/.style={sibling distance=1cm}, scale=0.85, transform shape,
+   every node/.style={circle, minimum size=0.6cm}]
+   
+\node {$n$}
+  child {node {$\frac{n}{2}$}
+    child {node {$\frac{n}{4}$}
+      child[dotted] {node[draw=none]{}}
+      child[dotted] {node[draw=none]{}}
+    }
+    child {node {$\frac{n}{4}$}
+      child[dotted] {node[draw=none]{}}
+      child[dotted] {node[draw=none]{}}
+    }
+  }
+  child {node {$\frac{n}{2}$}
+    child {node {$\frac{n}{4}$}
+      child[dotted] {node[draw=none]{}}
+      child[dotted] {node[draw=none]{}}
+    }
+    child {node {$\frac{n}{4}$}
+      child[dotted] {node[draw=none]{}}
+      child[dotted] {node[draw=none]{}}
+    }
+  };
+
+% Right labels
+\node<2->[draw=none, right=3cm] at (0, 0) {Custo: $n$};
+\node<3->[draw=none, right=1.25cm] at (1.75, -1.1) {Custo: $\frac{n}{2} + \frac{n}{2} = n$};
+\node<4->[draw=none, right=0cm] at (2.6, -2.2) {Custo: $4 \times \frac{n}{4} = n$};
+\node<5->[draw=none, right=0.3cm] at (2.5, -3.3) {Nível Secundário...};
+
+\end{tikzpicture}
+\end{center}
+\onslide<6->{Somatório cumulativo $\sum^{h}_{1} {n} = n \times h$ onde a profundidade foliar $h = \log_2 n$.
+\textbf{Solução de Complexidade:} $\mathbf{\Theta(n \log n)}$.}
+
+\end{frame}
+
+
+\subsection{Método Master}
+ \begin{frame}{Ensaio de Master: Formulário Direto Mapeado}   
+
+Trata-se do \textit{Cookbook} algorítmico global \cite{A03} visando solucionar eficientemente recorrências regidas pelo esqueleto genérico base:
+\begin{alertblock}{Estrutura do Teorema}
+ $$\mathbf{T(n) = aT\left(\frac{n}{b}\right) + f(n)} \quad \text{em que } a\geq 1, b > 1 \text{ ctes, e } f(n) \geq 0$$
+\end{alertblock}
+\pause
+\textbf{Decifrando Parâmetros da Lógica Analítica:}
+\begin{itemize}
+ \item $a$: Subproblemas fracionados disparados ativamente recursão paralela na máquina.
+ \item $b$: Fator de cisão/fatiamento reduzindo o problema nuclear.
+ \item $f(n)$: Fator de carga de custo para repartição central e fusão/mesclagem subsequente do processo.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Avaliação de Domínio: Comparativo Polinomial}   
+O pilar metodológico se encarrega de comparar assintoticamente o esforço polinomial fixo $f(n)$ contra a expansão quantizada $n^{\log_b a}$ (volume iterativo da árvore tracionada).
+
+\pause
+\begin{description}
+ \item[Caso 1: Folhas predominam] Se $f(n) = O(n^{\log_b a - \epsilon})$ com $\epsilon > 0 \implies \mathbf{T(n) = \Theta(n^{\log_b a})}$. \\ \textit{(A recursão cresce velozmente, devorando recursos marginais na borda foliar).}
+ \pause
+ \item[Caso 2: Empate de Forças] Se $f(n) = \Theta(n^{\log_b a}) \implies \mathbf{T(n) = \Theta(n^{\log_b a} \cdot \log n)}$. \\ \textit{(Trabalho equitativo sendo distribuído ao longo dos níveis perfeitamente).}
+ \pause
+ \item[Caso 3: Raiz predominante] Se $f(n) = \Omega(n^{\log_b a + \epsilon})$ para $\epsilon > 0$, dado a regularidade restrita $a \cdot f(\frac{n}{b}) \leq c \cdot f(n) \implies \mathbf{T(n) = \Theta(f(n))}$.
+\end{description}
+\end{frame}
+
+
+\begin{frame}{Casos de Aplicação Direta Mestre}   
+Embate Intelectual Clássico - Tente determinar o limite Assintótico:
+\pause
+\begin{block}{Exemplo 1 (Raízes Duplas)}
+$T(n) = 4T(n/2) + n \implies n^{\log_2 4} = n^2$. Folhas sobrepujam $n$. \\
+Resposta: \textbf{Caso 1 $\rightarrow \Theta(n^2)$}.
+\end{block}
+\pause
+\begin{block}{Exemplo 2 (Esboço Singular)}
+$T(n) = T(2n/3) + 1 \implies b=3/2 \implies n^{\log_{1.5} 1} = n^0 = 1$. Concorrem equilibrados \\
+Resposta: \textbf{Caso 2 $\rightarrow \Theta(\log n)$}.
+\end{block}
+\pause
+\begin{block}{Exemplo 3 (Carga Complexificada)}
+$T(n) = 9T(n/3) + n^3 \implies n^{\log_3 9} = n^2$. Raiz (composição) supera limite $n^3 > n^2$ \\
+Resposta: \textbf{Caso 3 $\rightarrow \Theta(n^3)$}.
+\end{block}
+\end{frame}
+
+
+\section{Referências Bibliográficas}
+\begin{frame}[t,allowframebreaks]
+\frametitle{Referências}
+\begin{thebibliography}{*}
+
+        \bibitem[A01]{A01} Lee K.D., Hubbard S. (2015) Trees. In: Data Structures and Algorithms with Python. Undergraduate Topics in Computer Science. Springer, Cham. \url{https://doi.org/10.1007/978-3-319-13072-9_6}
+        
+        \bibitem[A02]{A02} Hubbard, J. (2007). Schaum’s Outline of Data Structures with Java. \url{http://www.amazon.com/Schaums-Outline-Data-Structures-Java/dp/0071476989}
+        
+        \bibitem[A03]{A03} Cormen, T. H., Leiserson, C. E., \& Stein, R. L. R. (2012). Algoritmos: teoria e prática. \url{https://books.google.com.br/books?id=6iA4LgEACAAJ}.
+        
+        \bibitem[A04]{A04} Ascenio, Ana Fernanda Gomes. Estrutura de dados: Algoritmos, análise da complexidade e implementações em Java e C++. São Paulo: Pearson Prentice Hall, 2010.
+        
+        \bibitem[A06]{A06} Szwarcfiter, Jayme Luiz. Estruturas de dados e seus algoritmos / Jayme Luiz Szwarcfiter, Lilian Markenzon. 3.ed. [Reimpr.]. - Rio de Janeiro : LTC, 2015.
+        
+        \bibitem[A07]{A07} Capítulo 20: Árvores — documentação Aprenda Computação com Python 3.0 2009.1. \url{https://mange.ifrn.edu.br/python/aprenda-com-py3/capitulo_20.html}
+\end{thebibliography}
+\end{frame}
+
+\section{}
+\setbeamertemplate{logo}{}
+\begin{frame}
+\titlepage
+\end{frame}
+
+\end{document}
