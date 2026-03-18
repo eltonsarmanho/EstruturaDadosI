@@ -1,0 +1,363 @@
+\documentclass{beamer}
+\setbeamerfont{headline}{size=\footnotesize}
+
+\mode<presentation>{
+\usetheme{Montpellier}
+\setbeamercovered{transparent}
+\usecolortheme{lsc}
+}
+
+\mode<handout>{
+  \usepackage[bar]{beamerthemetree}
+  \beamertemplatesolidbackgroundcolor{black!5}
+}
+
+\usepackage{amsmath,amssymb}
+\usepackage[brazil]{varioref}
+\usepackage[english,brazil]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{fontawesome}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows.meta,positioning,calc}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{url}
+\usepackage{colortbl}
+\usepackage{caption}
+\usepackage{transparent}
+\usepackage{multirow}
+\usepackage{color}
+\usepackage{algpseudocode}
+
+\input{commands}
+
+\beamertemplatetransparentcovereddynamic
+\addtobeamertemplate{title page}{\centering{ \includegraphics[width=1.25cm]{figs/logo.png}}}{}
+\title[Estrutura de Dados I]{Busca}
+\author[Elton Sarmanho]{ 
+Professor: Elton Sarmanho\inst{1} 
+\newline
+E-mail: \href{mailto:eltonss@ufpa.br}{eltonss@ufpa.br}\newline
+\href{https://github.com/eltonsarmanho}{\faGithub} \href{https://www.linkedin.com/in/elton-sarmanho-836553185/}{\faLinkedinSquare}
+}   
+  \institute[UFPA]{
+   \inst{1}%
+     Faculdade de Sistemas de Informação - UFPA/CUTINS
+     }     
+ 
+\date{\today}
+\pgfdeclareimage[height= 1.25 cm]{inf}{figs/logo.png}
+\logo{{\transparent{0.35}\pgfuseimage{inf}}}
+
+\setbeamertemplate{navigation symbols}{\insertframenavigationsymbol \insertsectionnavigationsymbol \insertbackfindforwardnavigationsymbol} 
+\newcounter{saveenumi}
+\newcommand{\seti}{\setcounter{saveenumi}{\value{enumi}}}
+\newcommand{\conti}{\setcounter{enumi}{\value{saveenumi}}}
+
+\expandafter\def\expandafter\insertshorttitle\expandafter{%
+  \insertshorttitle\hfill%
+  \insertframenumber\,/\,\inserttotalframenumber}
+
+\begin{document}
+\setbeamertemplate{logo}{}
+\begin{frame}
+\titlepage
+\end{frame}
+\logo{{\transparent{0.35}\pgfuseimage{inf}}}
+
+\begin{frame}
+\frametitle{Roteiro}
+\tableofcontents
+\end{frame}
+
+\pgfdeclareimage[width= 3.5 in]{fig1}{figs/industriaJogos.png}
+\pgfdeclareimage[width= 3.5 in]{fig11}{figs/industriaJogos.png}
+\pgfdeclareimage[width= 3.5 in, height = 2.25 in]{fig2}{figs/arquiteturaGeral.png}
+
+\section{Introdução}
+\subsection{Objetivos}
+\begin{frame}{Objetivos de Aprendizagem}
+\begin{itemize}
+    \item Compreender o problema fundamental da Busca (ou Pesquisa) na Ciência da Computação. \pause
+    \item Analisar e implementar os principais algoritmos de busca:
+    \begin{itemize}
+        \item Busca Sequencial (Linear).
+        \item Busca Binária.
+    \end{itemize} \pause
+    \item Avaliar a complexidade assintótica (tempo e espaço) de cada estratégia. \pause
+    \item Discutir aplicações reais e adequação de estruturas de dados para otimização de buscas.
+\end{itemize}
+\end{frame}
+
+\subsection{Conceitos Gerais}
+\begin{frame}{A Importância do Estudo de Buscas}
+\begin{block}{O Problema da Busca}
+Dado um conjunto de elementos, onde cada um é identificado por uma \textbf{chave} (identificador único), o objetivo é localizar eficientemente o registro correspondente a uma chave específica de pesquisa.
+\end{block}
+\pause
+\vspace{0.3cm}
+\begin{itemize}
+    \item É uma das tarefas mais intrínsecas e recorrentes no processamento de dados.
+    \item O desempenho da busca é afetado pela estrutura de dados subjacente:
+    \begin{itemize}
+        \item Estruturas Lineares: Vetores, Listas, Pilhas.
+        \item Estruturas Não-Lineares: Grafos, Árvores.
+    \end{itemize}
+    \item A \textbf{ordenação prévia} atua como redutor da complexidade temporal da busca.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Nomenclatura Técnica}
+\begin{block}{Tabela ou Arquivo}
+Qualquer estrutura de dados empregada para o armazenamento de informações. É composta por um conjunto de elementos fundamentais denominados \textbf{registros}.
+\end{block}
+\pause
+\vspace{0.4cm}
+\begin{itemize}
+    \item \textbf{Chave de Busca ($k$):} Atributo principal (ou conjunto) utilizado para referenciar e distinguir os registros nas consultas.
+    \item A Tabela e o mecanismo podem ser implementados via:
+    \begin{itemize}
+        \item Vetores e matrizes (arranjo fixo e indexado).
+        \item Listas Dinâmicas (encadeamento simples ou duplo).
+        \item Variáveis Estruturadas Arbóreas (Nós).
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Natureza Foco: Busca Interna x Externa}
+\begin{itemize}
+    \item \textbf{Busca Interna:} O volume de dados manipulados é moderado, fazendo com que o conjunto total de elementos ajuste-se completamente à memória principal (RAM).
+    \item \textbf{Busca Externa:} Volume extensivo, necessitando consultas a bases presentes em memória secundária (ex: Árvore \textbf{B} e Banco de Dados \textbf{SQL}).
+\end{itemize}
+\pause
+\vspace{0.3cm}
+\begin{block}{Nosso Foco}
+Nas próximas seções, abordam-se técnicas de \textbf{buscas internas} sob coleções lineares, priorizando o equilíbrio do custo computacional.
+\end{block}
+\end{frame}
+
+\section{Busca Sequencial}
+\subsection{Conceitos Gerais}
+
+\begin{frame}{Busca Sequencial - Fundamentos}
+\begin{itemize}
+    \item Também conhecida na literatura como \textit{Busca Linear}.
+    \item Configura-se como a estratégia metodológica natural e elementar perante problemas de busca sem ordenação assumida.
+    \item \textbf{Mecânica:} Partindo de registros armazenados em posições contíguas (ou iteráveis linearmente), o algoritmo varre o domínio exaustivamente até localizar a chave procurada, ou atingir o fundo da coleção.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Comportamento - Vetor Não Ordenado}
+\begin{center}
+\textbf{Exemplo:} Busca pela chave \textbf{37}.
+\vspace{0.5cm}
+
+\begin{tikzpicture}[
+    element/.style={draw, minimum width=1.1cm, minimum height=0.9cm, font=\large},
+    pointer/.style={->, thick, auto, shorten >=2pt}
+]
+    \node[element, fill=gray!20] (n0) at (0,0) {12};
+    \node[element, fill=gray!20] (n1) at (1.1,0) {25};
+    \node[element, fill=gray!20] (n2) at (2.2,0) {8};
+    \node[element, fill=blue!30] (n3) at (3.3,0) {37};
+    \node[element, fill=gray!20] (n4) at (4.4,0) {99};
+    \node[element, fill=gray!20] (n5) at (5.5,0) {14};
+    
+    \foreach \i in {0,...,5} {
+        \node at (\i*1.1, -0.7) {\small \i};
+    }
+    
+    \only<2>{\draw[pointer, red] (0,1) -- (n0.north) node[midway, above] {$12 \neq 37$};}
+    \only<3>{\draw[pointer, red] (1.1,1) -- (n1.north) node[midway, above] {$25 \neq 37$};}
+    \only<4>{\draw[pointer, red] (2.2,1) -- (n2.north) node[midway, above] {$8 \neq 37$};}
+    \only<5>{\draw[pointer, green!60!black] (3.3,1) -- (n3.north) node[midway, above] {\textbf{Encontrado ($i=3$)}};}
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Algoritmo: Vetor Não Ordenado}
+\begin{block}{Busca Sequencial Universal}
+\begin{algorithmic}[1]
+\Function{BuscaSequencial}{$A, n, x$}
+    \For{$i \gets 0$ \textbf{ate} $n-1$}
+        \If{$A[i] == x$}
+            \State \textbf{retorne} $i$ \Comment{Elemento foi encontrado}
+        \EndIf
+    \EndFor
+    \State \textbf{retorne} $-1$ \Comment{Condição de falha}
+\EndFunction
+\end{algorithmic}
+\end{block}
+\end{frame}
+
+\begin{frame}{Comportamento - Vetor Ordenado}
+\begin{itemize}
+    \item Se a estrutura tiver sido previamente \textbf{ordenada}, a busca linear pode prover rejeição precoce em certas iterações. \pause
+    \item Em uma coleção ordenada \textit{crescentemente}, as verificações sucessivas podem ser finalizadas impreterivelmente tão logo processarmos valores excedentes à chave investigada.
+    \item \textbf{Impacto:} Reduz pela metade as asserções de buscas por chaves que não existam na origem.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Algoritmo: Vetor Ordenado}
+\begin{block}{Busca Sequencial Otimizada Antecipada}
+\begin{algorithmic}[1]
+\Function{BuscaSequencialOrd}{$A, n, x$}
+    \For{$i \gets 0$ \textbf{ate} $n-1$}
+        \If{$A[i] == x$}
+            \State \textbf{retorne} $i$
+        \ElsIf{$A[i] > x$}
+            \State \textbf{retorne} $-1$ \Comment{Parada por superioridade limitante}
+        \EndIf
+    \EndFor
+    \State \textbf{retorne} $-1$
+\EndFunction
+\end{algorithmic}
+\end{block}
+\end{frame}
+
+\begin{frame}{Análise Assintótica Espaço-Temporal}
+\begin{block}{Complexidade Teórica da Busca Sequencial}
+Dado um vetor com dimensão computacional $n$:
+\begin{itemize}
+    \item \textbf{Melhor Caso ($O(1)$):} A chave procurada é o primeiro índice da arrumação.
+    \item \textbf{Pior Caso ($O(n)$):} Varredura plena inibe os recursos; a chave alocam-se na extremidade ou é displicente e omissa em relação à classe.
+\end{itemize}
+\end{block}
+\end{frame}
+
+\section{Busca Binária}
+\subsection{Conceitos Gerais}
+
+\begin{frame}{Busca Binária - Divisão e Conquista}
+\begin{itemize}
+    \item Requisito obrigatório: \textbf{A coleção deve estar categoricamente ordenada} e permitir acesso em tempo constante a quaisquer dos seus índices (Vetores $O(1)$). \pause
+    \item \textbf{Filosofia Lógica:}
+    \begin{enumerate}
+        \item Compara-se a chave com o componente central do sub-arranjo.
+        \item Se for uma concordância perfeita, interrompe-se com a resposta.
+        \item Se o elemento é menor que o elemento central, descarta-se a metade superior.
+        \item Se maior, descarta-se a metade inferior.
+    \end{enumerate}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Comportamento Progressivo}
+\begin{center}
+\textbf{Exemplo:} Busca pela chave \textbf{44}. \\
+\vspace{0.3cm}
+
+\begin{tikzpicture}[
+    element/.style={draw, minimum width=0.9cm, minimum height=0.8cm, font=\small},
+    pointer/.style={->, thick, auto, shorten >=2pt}
+]
+    \node[element] (n0) at (0,0) {5};
+    \node[element] (n1) at (0.9,0) {12};
+    \node[element] (n2) at (1.8,0) {23};
+    \node[element] (n3) at (2.7,0) {29};
+    \node[element] (n4) at (3.6,0) {44};
+    \node[element] (n5) at (4.5,0) {58};
+    \node[element] (n6) at (5.4,0) {70};
+    \node[element] (n7) at (6.3,0) {81};
+    \node[element] (n8) at (7.2,0) {95};
+    
+    \foreach \i in {0,...,8} \node at (\i*0.9, -0.6) {\scriptsize \i};
+    
+    \onslide<2>{
+        \node[above=0.2cm of n0, font=\scriptsize, blue] {esq};
+        \node[above=0.2cm of n8, font=\scriptsize, blue] {dir};
+        \node[above=0.2cm of n4, font=\scriptsize, blue, thick] (nmeio) {meio};
+        \node[fill=green!20, draw, minimum width=0.9cm, minimum height=0.8cm] at (3.6,0) {44};
+        \draw[pointer, green!60!black] (nmeio.north |- 0, 1.4) node[above] {\textbf{Encontrado ($A[meio] == 44$)}} -- (nmeio.north);
+    }
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+\begin{frame}{Comportamento Transicional e Iterativo}
+\begin{center}
+\textbf{Exemplo 2:} Busca pela chave \textbf{23}. \\
+\vspace{0.3cm}
+
+\only<1>{
+\begin{tikzpicture}[
+    element/.style={draw, minimum width=0.9cm, minimum height=0.8cm, font=\small}
+]
+    \node[element] (n0) at (0,0) {5}; \node[element] (n1) at (0.9,0) {12}; \node[element] (n2) at (1.8,0) {23}; \node[element] (n3) at (2.7,0) {29};
+    \node[element, fill=red!10] (n4) at (3.6,0) {44};
+    \node[element, fill=gray!30] (n5) at (4.5,0) {58}; \node[element, fill=gray!30] (n6) at (5.4,0) {70}; \node[element, fill=gray!30] (n7) at (6.3,0) {81}; \node[element, fill=gray!30] (n8) at (7.2,0) {95};
+    \node[above=0.2cm of n4, font=\scriptsize, red] {meio: $44 > 23$ $\rightarrow$ Ignorar direita};
+\end{tikzpicture}
+}
+
+\only<2>{
+\begin{tikzpicture}[
+    element/.style={draw, minimum width=0.9cm, minimum height=0.8cm, font=\small}
+]
+    \node[element] (n0) at (0,0) {5}; \node[element, fill=red!10] (n1) at (0.9,0) {12}; \node[element] (n2) at (1.8,0) {23}; \node[element] (n3) at (2.7,0) {29};
+    \foreach \i/\val in {4/44, 5/58, 6/70, 7/81, 8/95} \node[element, fill=gray!30] at (\i*0.9,0) {\val};
+    \node[above=0.2cm of n1, font=\scriptsize, red] {meio: $12 < 23$ $\rightarrow$ Ignorar esquerda};
+\end{tikzpicture}
+}
+
+\only<3>{
+\begin{tikzpicture}[
+    element/.style={draw, minimum width=0.9cm, minimum height=0.8cm, font=\small}
+]
+    \node[element, fill=gray!30] (n0) at (0,0) {5}; \node[element, fill=gray!30] (n1) at (0.9,0) {12}; 
+    \node[element, fill=green!20] (n2) at (1.8,0) {23}; 
+    \node[element] (n3) at (2.7,0) {29};
+    \foreach \i/\val in {4/44, 5/58, 6/70, 7/81, 8/95} \node[element, fill=gray!30] at (\i*0.9,0) {\val};
+    \node[above=0.2cm of n2, font=\scriptsize, green!60!black] {$A[meio] == 23$. \textbf{Encontrado!}};
+\end{tikzpicture}
+}
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Código Binário Estruturado}
+\begin{block}{Busca Binária Iterativa Clássica}
+\begin{algorithmic}[1]
+\Function{BuscaBinaria}{$A, n, x$}
+    \State $esq \gets 0$
+    \State $dir \gets n - 1$
+    \While{$esq \leq dir$}
+        \State $meio \gets \lfloor (esq + dir) / 2 \rfloor$
+        \If{$A[meio] == x$}
+            \State \textbf{retorne} $meio$
+        \ElsIf{$A[meio] < x$}
+            \State $esq \gets meio + 1$
+        \Else
+            \State $dir \gets meio - 1$
+        \EndIf
+    \EndWhile
+    \State \textbf{retorne} $-1$
+\EndFunction
+\end{algorithmic}
+\end{block}
+\end{frame}
+
+\begin{frame}{Análise Assintótica Espaço-Temporal}
+\begin{block}{Complexidade Logarítmica}
+Graças à divisão em sub-problemas paralelos isolados, o número rigoroso de quebras recursivas e comparações maximiza-se estritamente à progressão $\log_2 n$.
+\begin{description}
+    \item[Pior Caso ($O(\log n)$):] Reduz substancialmente a busca computável, conferindo escala planetária.
+    \item[Melhor ($O(1)$) e Médio ($O(\log n)$):] Comportamentos matemáticos invariantes.
+\end{description}
+\end{block}
+\pause
+\vspace{0.2cm}
+\begin{itemize}
+    \item \textbf{Desvantagem:} O engessamento ordenatório e as restrições inatas das manipulações dinâmicas estruturais indexadas.
+\end{itemize}
+\end{frame}
+
+
+
+
+
+\section{}
+\setbeamertemplate{logo}{}
+\begin{frame}
+\titlepage
+\end{frame}
+
+\end{document}

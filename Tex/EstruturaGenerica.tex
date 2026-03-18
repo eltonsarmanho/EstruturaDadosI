@@ -1,0 +1,1471 @@
+\documentclass{beamer}
+\setbeamerfont{headline}{size=\footnotesize}
+
+\mode<presentation>{
+\usetheme{Montpellier}
+\setbeamercovered{transparent}
+\usecolortheme{lsc}
+}
+
+\mode<handout>{
+  % tema simples para ser impresso
+  \usepackage[bar]{beamerthemetree}
+   % Colocando um fundo cinza quando for gerar transparências para serem impressas
+  % mais de uma transparência por página
+  \beamertemplatesolidbackgroundcolor{black!5}
+}
+
+
+\usepackage{amsmath,amssymb}
+\usepackage[brazil]{varioref}
+\usepackage[english,brazil]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{fontawesome}
+\usepackage{tikz}
+%\usepackage[latin1]{inputenc}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{url}
+\usepackage{colortbl}
+\usepackage{caption}
+\usepackage{tikz}
+\usepackage{transparent}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{listings}
+\usepackage{caption}
+\usepackage{listings} %iclude code in your document
+
+\usepackage{algpseudocode}
+
+\input{commands}
+
+\definecolor{maroon}{cmyk}{0, 0.87, 0.68, 0.32}
+\definecolor{halfgray}{gray}{0.55}
+\definecolor{ipython_frame}{RGB}{207, 207, 207}
+\definecolor{ipython_bg}{RGB}{247, 247, 247}
+\definecolor{ipython_red}{RGB}{186, 33, 33}
+\definecolor{ipython_green}{RGB}{0, 128, 0}
+\definecolor{ipython_cyan}{RGB}{64, 128, 128}
+\definecolor{ipython_purple}{RGB}{170, 34, 255}
+
+\usepackage{listings}
+\lstset{
+    breaklines=true,
+    %
+    extendedchars=true,
+    literate=
+    {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+    {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+    {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+    {À}{{\`A}}1 {È}{{\'E}}1 {Ì}{{\`I}}1 {Ò}{{\`O}}1 {Ù}{{\`U}}1
+    {ä}{{\"a}}1 {ë}{{\"e}}1 {ï}{{\"i}}1 {ö}{{\"o}}1 {ü}{{\"u}}1
+    {Ä}{{\"A}}1 {Ë}{{\"E}}1 {Ï}{{\"I}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1
+    {â}{{\^a}}1 {ê}{{\^e}}1 {î}{{\^i}}1 {ô}{{\^o}}1 {û}{{\^u}}1
+    {Â}{{\^A}}1 {Ê}{{\^E}}1 {Î}{{\^I}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1
+    {œ}{{\oe}}1 {Œ}{{\OE}}1 {æ}{{\ae}}1 {Æ}{{\AE}}1 {ß}{{\ss}}1
+    {ç}{{\c c}}1 {Ç}{{\c C}}1 {ø}{{\o}}1 {å}{{\r a}}1 {Å}{{\r A}}1
+    {€}{{\EUR}}1 {£}{{\pounds}}1
+}
+
+%%
+%% Python definition (c) 1998 Michael Weber
+%% Additional definitions (2013) Alexis Dimitriadis
+%% modified by me (should not have empty lines)
+%%
+\lstdefinelanguage{Python}{
+    morekeywords={access,and,break,class,continue,def,del,elif,else,except,exec,finally,for,from,global,if,import,in,is,lambda,not,or,pass,print,raise,return,try,while},%
+    %
+    % Built-ins
+    morekeywords=[2]{abs,all,any,basestring,bin,bool,bytearray,callable,chr,classmethod,cmp,compile,complex,delattr,dict,dir,divmod,enumerate,eval,execfile,file,filter,float,format,frozenset,getattr,globals,hasattr,hash,help,hex,id,input,int,isinstance,issubclass,iter,len,list,locals,long,map,max,memoryview,min,next,object,oct,open,ord,pow,property,range,raw_input,reduce,reload,repr,reversed,round,set,setattr,slice,sorted,staticmethod,str,sum,super,tuple,type,unichr,unicode,vars,xrange,zip,apply,buffer,coerce,intern},%
+    %
+    sensitive=true,%
+    morecomment=[l]\#,%
+    morestring=[b]',%
+    morestring=[b]",%
+    %
+    morestring=[s]{'''}{'''},% used for documentation text (mulitiline strings)
+    morestring=[s]{"""}{"""},% added by Philipp Matthias Hahn
+    %
+    morestring=[s]{r'}{'},% `raw' strings
+    morestring=[s]{r"}{"},%
+    morestring=[s]{r'''}{'''},%
+    morestring=[s]{r"""}{"""},%
+    morestring=[s]{u'}{'},% unicode strings
+    morestring=[s]{u"}{"},%
+    morestring=[s]{u'''}{'''},%
+    morestring=[s]{u"""}{"""}%
+    %
+    % {replace}{replacement}{lenght of replace}
+    % *{-}{-}{1} will not replace in comments and so on
+    literate=
+    {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+    {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+    {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+    {À}{{\`A}}1 {È}{{\'E}}1 {Ì}{{\`I}}1 {Ò}{{\`O}}1 {Ù}{{\`U}}1
+    {ä}{{\"a}}1 {ë}{{\"e}}1 {ï}{{\"i}}1 {ö}{{\"o}}1 {ü}{{\"u}}1
+    {Ä}{{\"A}}1 {Ë}{{\"E}}1 {Ï}{{\"I}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1
+    {â}{{\^a}}1 {ê}{{\^e}}1 {î}{{\^i}}1 {ô}{{\^o}}1 {û}{{\^u}}1
+    {Â}{{\^A}}1 {Ê}{{\^E}}1 {Î}{{\^I}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1
+    {œ}{{\oe}}1 {Œ}{{\OE}}1 {æ}{{\ae}}1 {Æ}{{\AE}}1 {ß}{{\ss}}1
+    {ç}{{\c c}}1 {Ç}{{\c C}}1 {ø}{{\o}}1 {å}{{\r a}}1 {Å}{{\r A}}1
+    {€}{{\EUR}}1 {£}{{\pounds}}1
+    %
+    {^}{{{\color{ipython_purple}\^{}}}}1
+    {=}{{{\color{ipython_purple}=}}}1
+    %
+    {+}{{{\color{ipython_purple}+}}}1
+    *{-}{{{\color{ipython_purple}-}}}1
+    {*}{{{\color{ipython_purple}$^\ast$}}}1
+    {/}{{{\color{ipython_purple}/}}}1
+    %
+    {+=}{{{+=}}}1
+    {-=}{{{-=}}}1
+    {*=}{{{$^\ast$=}}}1
+    {/=}{{{/=}}}1,
+    %
+    identifierstyle=\color{black}\ttfamily,
+    commentstyle=\color{ipython_cyan}\ttfamily,
+    stringstyle=\color{ipython_red}\ttfamily,
+    keepspaces=true,
+    showspaces=false,
+    showstringspaces=false,
+    %
+    rulecolor=\color{ipython_frame},
+    frame=single,
+    frameround={t}{t}{t}{t},
+    framexleftmargin=6mm,
+    numbers=left,
+    numberstyle=\tiny\color{halfgray},
+    %
+    %
+    backgroundcolor=\color{ipython_bg},
+    %   extendedchars=true,
+    basicstyle=\scriptsize,
+    keywordstyle=\color{ipython_green}\ttfamily,
+}
+% Adicione estas linhas ao seu preâmbulo em EstruturaGenerica.tex
+\usepackage{tikz}
+
+\usetikzlibrary{arrows.meta, shapes.geometric, positioning, calc, chains, shapes.multipart}
+
+% Substitua o \tikzstyle antigo por este \tikzset, que é a sintaxe moderna
+\tikzset{
+    node_style/.style={
+        rectangle split,
+        rectangle split horizontal, % <--- AQUI ESTÁ A CORREÇÃO!
+        rectangle split parts=3,
+        draw=lscText,
+        fill=lscgreen!70,
+        rounded corners,
+        text=lscText,
+        font=\bfseries,
+        minimum height=2em,
+        text depth=0.5ex
+    },
+    pointer_style/.style={
+        -{Stealth[length=3mm, width=2mm]},
+        draw=lscgreenFonte,
+        thick
+    },
+    label_style/.style={
+        text=lscText,
+        font=\small
+    },
+     % ADICIONE ESTE NOVO ESTILO AQUI
+    stack_node_style/.style={
+        draw=lscText,
+        fill=lscgreen!70,
+        rounded corners,
+        text=lscText,
+        font=\bfseries,
+        minimum height=2em,
+        minimum width=4em
+    }
+}
+\beamertemplatetransparentcovereddynamic
+\addtobeamertemplate{title page}{\centering{ \includegraphics[width=1.25cm]{figs/logo.png}}}{}
+\title[Estrutura de Dados I]{Estruturas Genéricas}
+\author[Elton Sarmanho]{ 
+Professor: Elton Sarmanho\inst{1} 
+\newline
+E-mail: \href{mailto:eltonss@ufpa.br}{eltonss@ufpa.br}\newline
+\href{https://github.com/eltonsarmanho}{\faGithub} \href{https://www.linkedin.com/in/elton-sarmanho-836553185/}{\faLinkedinSquare}
+}   
+  \institute[UFPA]{
+   \inst{1}%
+     Faculdade de Sistemas de Informação - UFPA/CUTINS
+     }     
+ 
+% Se comentar a linha abaixo, irá aparecer a data quando foi compilada a apresentação  
+\date{\today}
+\pgfdeclareimage[height= 1.25 cm]{inf}{figs/logo.png}
+% pode-se colocar o LOGO assim
+\logo{{\transparent{0.35}\pgfuseimage{inf}}}
+
+% \AtBeginSection[]{
+%   \begin{frame}<beamer>
+%     \frametitle{Roteiro}
+%     \tableofcontents[currentsection,currentsubsection]
+%   \end{frame}  
+% }
+\setbeamertemplate{navigation symbols}{\insertframenavigationsymbol \insertsectionnavigationsymbol \insertbackfindforwardnavigationsymbol} 
+\newcounter{saveenumi}
+\newcommand{\seti}{\setcounter{saveenumi}{\value{enumi}}}
+\newcommand{\conti}{\setcounter{enumi}{\value{saveenumi}}}
+
+\expandafter\def\expandafter\insertshorttitle\expandafter{%
+  \insertshorttitle\hfill%
+  \insertframenumber\,/\,\inserttotalframenumber}
+\begin{document}
+\setbeamertemplate{logo}{}
+\begin{frame}
+\titlepage
+\end{frame}
+%Começar mostrar Logo apos slide de titulo
+\logo{{\transparent{0.35}\pgfuseimage{inf}}}
+
+\begin{frame}
+\frametitle{Roteiro}
+\tableofcontents[sections={1-2}]
+\end{frame}
+\begin{frame}
+\frametitle{Roteiro}
+\tableofcontents[sections={3-4}]
+\end{frame}
+\begin{frame}
+\frametitle{Roteiro}
+\tableofcontents[sections={5-6}]
+\end{frame}
+
+%Declaração das Imagens da Apresentação
+\pgfdeclareimage[width= 3.5 in]{fig1}{figs/industriaJogos.png}%
+\pgfdeclareimage[width= 3.5 in]{fig11}{figs/industriaJogos.png}%
+\pgfdeclareimage[width= 3.5 in, height = 2.25 in]{fig2}{figs/arquiteturaGeral.png}%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Conceitos Gerais}
+
+\subsection{Objetivos}
+\begin{frame}{}
+    
+\begin{itemize}
+ \item \hspace{-1 pt}Esta aula apresenta conceitos gerais pilhas, filas e listas. Ao final, você deverá compreender os seguintes tópicos:
+ \begin{itemize}
+  \item Representação visual dessas estruturas
+  \item Representação computacional dessas estruturas
+  \item Algoritmos de Pesquisa, Remoção e Inserção
+  \item Aplicações Reais
+ \end{itemize} 
+\end{itemize}
+\end{frame}
+
+\section{Listas}
+\subsection{Conceitos Gerais}
+
+\begin{frame}
+\begin{itemize}
+ \item É uma estrutura de dados na qual os objetos estão organizados em ordem linear.
+ \item Listas Estáticas
+ \begin{itemize}
+  \item representadas por vetores e índices.
+ \end{itemize}
+ \item Listas dinâmicas
+ \begin{itemize}
+  \item representadas por ponteiro (aponta para próximo elemento). Por isso o nome ``Lista encadeada''
+  \item Toda lista encadeada tem pelo menos um ponteiro para o início.
+ \end{itemize}
+
+\end{itemize}
+
+
+\end{frame}
+
+\begin{frame}
+\begin{itemize}
+ \item A lista possui apenas um dado primitivo é dita \textbf{homogênea}
+ \item A lista possui dados compostos é dita \textbf{heterogênea}
+ \end{itemize}
+
+\begin{center}
+ \includegraphics[bb=0 0 777 353,scale=0.4]{figs/TipoLista.png}
+ % TipoLista.png: 777x353 px, 72dpi, 27.41x12.45 cm, bb=0 0 777 353
+\end{center}
+
+
+\end{frame}
+
+\begin{frame}
+\begin{itemize}
+ \item Podemos implementar as listas de forma estática e dinâmica. Existem 5 tipos:
+\end{itemize}
+
+\begin{description}
+ \item[Lista simplesmente encadeada e não ordenada] 
+ \item[Lista simplesmente encadeada e ordenada] 
+ \item[Lista duplamente encadeada e não ordenada] 
+ \item[Lista duplamente encadeada e ordenada] 
+ \item[Lista circular] 
+\end{description}
+
+
+\end{frame}
+
+
+\begin{frame}{Estrutura Geral - Lista dinâmica}
+\begin{itemize}
+    \item A ordem em uma lista encadeada é determinada por um ponteiro em cada objeto.
+    \item Suporta diversas operações.
+    \item \textbf{Lista duplamente encadeada}: Cada elemento possui uma chave e ponteiros para o nó anterior e o próximo.
+\end{itemize}
+\begin{center}
+    \begin{tikzpicture}[node distance=1.5cm, start chain=going right]
+        % 1. Nós da lista usando o novo estilo de 3 compartimentos
+        %    O dado vai na 'nodepart{two}'
+        \node[node_style, on chain] (n1) {\nodepart{two}9};
+        \node[node_style, on chain] (n2) {\nodepart{two}16};
+        \node[node_style, on chain] (n3) {\nodepart{two}4};
+
+        % 2. Rótulo L.head
+        \node[font=\bfseries, left=0.5cm of n1] (head_label) {L.head};
+
+        % 3. Seta do L.head para o primeiro nó
+        %    Aponta para o compartimento do meio (o dado)
+        \draw[pointer_style] (head_label.east) -- (n1.two);
+
+        % 4. Ponteiros "próximo" e "anterior"
+        %    Conectam os compartimentos de ponteiro dos nós
+
+        % Ponteiro n1 <-> n2
+        % 'proximo' de n1 (n1.three) aponta para 'anterior' de n2 (n2.one)
+        \draw[pointer_style] (n1.three) to[bend left=25] (n2.one);
+        % 'anterior' de n2 (n2.one) aponta para 'proximo' de n1 (n1.three)
+        \draw[pointer_style] (n2.one) to[bend left=25] (n1.three);
+
+        % Ponteiro n2 <-> n3
+        \draw[pointer_style] (n2.three) to[bend left=25] (n3.one);
+        \draw[pointer_style] (n3.one) to[bend left=25] (n2.three);
+
+    \end{tikzpicture}
+\end{center}
+\end{frame}
+
+
+
+\begin{frame}{Estrutura Geral - Lista dinâmica}
+\begin{itemize}
+ \item Cada elemento da lista possui 3 atributos
+ \begin{itemize}
+  \item \textbf{chave}
+  \item \textbf{ponteiro} para \textbf{próximo} elemento (sucessor)
+  \item \textbf{ponteiro} para elemento \textbf{anterior} (predecessor)
+ \end{itemize}
+ 
+\end{itemize}
+\begin{center}
+    \begin{tikzpicture}[node distance=1.5cm, start chain=going right]
+        % 1. Nós da lista usando o novo estilo de 3 compartimentos
+        %    O dado vai na 'nodepart{two}'
+        \node[node_style, on chain] (n1) {\nodepart{two}9};
+        \node[node_style, on chain] (n2) {\nodepart{two}16};
+        \node[node_style, on chain] (n3) {\nodepart{two}4};
+
+        % 2. Rótulo L.head
+        \node[font=\bfseries, left=0.5cm of n1] (head_label) {L.head};
+
+        % 3. Seta do L.head para o primeiro nó
+        %    Aponta para o compartimento do meio (o dado)
+        \draw[pointer_style] (head_label.east) -- (n1.two);
+
+        % 4. Ponteiros "próximo" e "anterior"
+        %    Conectam os compartimentos de ponteiro dos nós
+
+        % Ponteiro n1 <-> n2
+        % 'proximo' de n1 (n1.three) aponta para 'anterior' de n2 (n2.one)
+        \draw[pointer_style] (n1.three) to[bend left=25] (n2.one);
+        % 'anterior' de n2 (n2.one) aponta para 'proximo' de n1 (n1.three)
+        \draw[pointer_style] (n2.one) to[bend left=25] (n1.three);
+
+        % Ponteiro n2 <-> n3
+        \draw[pointer_style] (n2.three) to[bend left=25] (n3.one);
+        \draw[pointer_style] (n3.one) to[bend left=25] (n2.three);
+
+    \end{tikzpicture}
+\end{center}
+
+\end{frame}
+
+
+\begin{frame}{Estrutura Geral - Lista dinâmica}
+\begin{itemize}
+ \item Dado $x$ um elemento da lista
+ \begin{itemize}
+  \item Se $x.anterior = null$ então é o primeiro elemento da lista
+ \item Se $x.proximo = null$ então é o último elemento da lista
+ \end{itemize}
+\item $L.head$ ou $L.inicio$ que aponta para primeiro elemento da lista
+\begin{itemize}
+ \item $L.inicio = null$ a lista é vazia
+\end{itemize}
+
+\end{itemize}
+\begin{center}
+    \begin{tikzpicture}[node distance=1.5cm, start chain=going right]
+        % 1. Nós da lista usando o novo estilo de 3 compartimentos
+        %    O dado vai na 'nodepart{two}'
+        \node[node_style, on chain] (n1) {\nodepart{two}9};
+        \node[node_style, on chain] (n2) {\nodepart{two}16};
+        \node[node_style, on chain] (n3) {\nodepart{two}4};
+
+        % 2. Rótulo L.head
+        \node[font=\bfseries, left=0.5cm of n1] (head_label) {L.head};
+
+        % 3. Seta do L.head para o primeiro nó
+        %    Aponta para o compartimento do meio (o dado)
+        \draw[pointer_style] (head_label.east) -- (n1.two);
+
+        % 4. Ponteiros "próximo" e "anterior"
+        %    Conectam os compartimentos de ponteiro dos nós
+
+        % Ponteiro n1 <-> n2
+        % 'proximo' de n1 (n1.three) aponta para 'anterior' de n2 (n2.one)
+        \draw[pointer_style] (n1.three) to[bend left=25] (n2.one);
+        % 'anterior' de n2 (n2.one) aponta para 'proximo' de n1 (n1.three)
+        \draw[pointer_style] (n2.one) to[bend left=25] (n1.three);
+
+        % Ponteiro n2 <-> n3
+        \draw[pointer_style] (n2.three) to[bend left=25] (n3.one);
+        \draw[pointer_style] (n3.one) to[bend left=25] (n2.three);
+
+    \end{tikzpicture}
+\end{center}
+
+\end{frame}
+
+
+
+
+\begin{frame}{Estrutura Geral - Lista dinâmica}
+\begin{itemize}
+ \item Caso queira implementar uma lista simplesmente encadeada. Que devemos alterar ?
+ \item Caso queira implementar uma lista circular. Que devemos alterar ?
+ \item Caso queira implementar uma lista ordenada. Que devemos alterar ?
+\end{itemize}
+\begin{center}
+    \begin{tikzpicture}[node distance=1.5cm, start chain=going right]
+        % 1. Nós da lista usando o novo estilo de 3 compartimentos
+        %    O dado vai na 'nodepart{two}'
+        \node[node_style, on chain] (n1) {\nodepart{two}9};
+        \node[node_style, on chain] (n2) {\nodepart{two}16};
+        \node[node_style, on chain] (n3) {\nodepart{two}4};
+
+        % 2. Rótulo L.head
+        \node[font=\bfseries, left=0.5cm of n1] (head_label) {L.head};
+
+        % 3. Seta do L.head para o primeiro nó
+        %    Aponta para o compartimento do meio (o dado)
+        \draw[pointer_style] (head_label.east) -- (n1.two);
+
+        % 4. Ponteiros "próximo" e "anterior"
+        %    Conectam os compartimentos de ponteiro dos nós
+
+        % Ponteiro n1 <-> n2
+        % 'proximo' de n1 (n1.three) aponta para 'anterior' de n2 (n2.one)
+        \draw[pointer_style] (n1.three) to[bend left=25] (n2.one);
+        % 'anterior' de n2 (n2.one) aponta para 'proximo' de n1 (n1.three)
+        \draw[pointer_style] (n2.one) to[bend left=25] (n1.three);
+
+        % Ponteiro n2 <-> n3
+        \draw[pointer_style] (n2.three) to[bend left=25] (n3.one);
+        \draw[pointer_style] (n3.one) to[bend left=25] (n2.three);
+
+    \end{tikzpicture}
+\end{center}
+
+\end{frame}
+\subsection{Operações}
+\begin{frame}
+\begin{itemize}
+ \item Busca
+  \item Inserção
+  \item Remoção
+  
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}[fragile]{Implementação em C}
+
+\centering\footnotesize
+\begin{lstlisting}[language=C]
+#include <stdio.h>
+#include <stdlib.h>
+
+struct node {
+   int chave;
+   struct node *anterior;
+   struct node *proximo;
+};
+
+struct node *head = NULL;//Nosso L.inicio ou L.head
+
+\end{lstlisting}
+\end{frame}
+
+
+\begin{frame}[fragile]{Implementação em Python}
+
+\centering\footnotesize
+\begin{lstlisting}[language=Python]
+
+class Nodo:
+    def __init__(self, valor):
+        self.chave = valor
+        self.proximo = None #proximo
+        self.anterior = None #anterior
+
+
+class ListaDuplamenteEncadeada:
+    def __init__(self):
+        self.inicio = None;
+
+\end{lstlisting}
+\end{frame}
+
+
+\begin{frame}{Operações: Busca}
+\begin{itemize}
+ \item O procedimento $List\_Search(L,K)$ realiza uma busca linear em busca da chave $k$ retornando um ponteiro para esse elemento
+ \item Se nenhum objeto for encontrado, busca retorna $Null$
+\end{itemize}
+
+
+\end{frame}
+
+
+
+
+\begin{frame}{Operações: Busca}
+\begin{itemize}
+ \item O procedimento $List\_Search(L,K)$ realiza uma busca linear em busca da chave $k$ retornando um ponteiro para esse elemento
+ \item Se nenhum objeto for encontrado, busca retorna $Null$
+\end{itemize}
+
+\begin{center}
+    \begin{tikzpicture}[node distance=1.5cm, start chain=going right]
+        % 1. Nós da lista usando o novo estilo de 3 compartimentos
+        %    O dado vai na 'nodepart{two}'
+        \node[node_style, on chain] (n1) {\nodepart{two}9};
+        \node[node_style, on chain] (n2) {\nodepart{two}16};
+        \node[node_style, on chain] (n3) {\nodepart{two}4};
+
+        % 2. Rótulo L.head
+        \node[font=\bfseries, left=0.5cm of n1] (head_label) {L.head};
+
+        % 3. Seta do L.head para o primeiro nó
+        %    Aponta para o compartimento do meio (o dado)
+        \draw[pointer_style] (head_label.east) -- (n1.two);
+
+        % 4. Ponteiros "próximo" e "anterior"
+        %    Conectam os compartimentos de ponteiro dos nós
+
+        % Ponteiro n1 <-> n2
+        % 'proximo' de n1 (n1.three) aponta para 'anterior' de n2 (n2.one)
+        \draw[pointer_style] (n1.three) to[bend left=25] (n2.one);
+        % 'anterior' de n2 (n2.one) aponta para 'proximo' de n1 (n1.three)
+        \draw[pointer_style] (n2.one) to[bend left=25] (n1.three);
+
+        % Ponteiro n2 <-> n3
+        \draw[pointer_style] (n2.three) to[bend left=25] (n3.one);
+        \draw[pointer_style] (n3.one) to[bend left=25] (n2.three);
+
+    \end{tikzpicture}
+\end{center}
+
+\begin{itemize}
+ \item $List\_Search(L,4)$ Retorna qual elemento ?
+ \item $List\_Search(L,88)$ Retorna qual elemento ?
+ \item Se existir dois elementos repetidos ? Qual retornar?
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Algoritmo: Busca em Lista}
+\begin{block}{Busca Linear (LIST-SEARCH)}
+\begin{algorithmic}[1]
+\Procedure{List-Search}{$L, k$}
+    \State $x \gets L.inicio$ \Comment{Inicia a busca pelo primeiro nó}
+    \While{$x \neq \text{NIL}$ \textbf{and} $x.chave \neq k$}
+        \State $x \gets x.proximo$ \Comment{Avança para o próximo nó}
+    \EndWhile
+    \State \textbf{return} $x$ \Comment{Retorna o nó ou NIL se não encontrar}
+\EndProcedure
+\end{algorithmic}
+\end{block}
+\vfill
+\begin{itemize}
+    \item A busca percorre a lista sequencialmente a partir do início.
+    \item \textbf{Complexidade (Pior Caso):} $O(n)$, pois pode ser necessário percorrer todos os $n$ elementos.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Listas: Análise e Aplicações}
+\footnotesize
+\begin{block}{Análise de Complexidade (Lista Duplamente Encadeada com n elementos)}
+    \centering
+    \begin{tabular}{l c c c}
+    \hline
+    \textbf{Operação} & \textbf{Melhor Caso} & \textbf{Médio} & \textbf{Pior Caso} \\
+    \hline
+    Acesso / Busca   & $O(1)$ & $O(n)$ & $O(n)$ \\
+    Inserção (início) & $O(1)$ & $O(1)$ & $O(1)$ \\
+    Inserção (final)\* & $O(1)$ & $O(1)$ & $O(1)$ \\
+    Remoção (início)  & $O(1)$ & $O(1)$ & $O(1)$ \\
+    Remoção (meio)\*\* & $O(1)$ & $O(n)$ & $O(n)$ \\
+    \hline
+    \end{tabular}
+
+\end{block}
+
+\begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+        \begin{alertblock}{Vantagens}
+            \begin{itemize}
+                \item Tamanho dinâmico, cresce conforme a necessidade.
+                \item Inserção e remoção eficientes nas extremidades ($O(1)$).
+            \end{itemize}
+        \end{alertblock}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+        \begin{exampleblock}{Desvantagens}
+            \begin{itemize}
+                \item Acesso lento a elementos (requer travessia).
+                \item Maior consumo de memória devido aos ponteiros.
+            \end{itemize}
+        \end{exampleblock}
+    \end{column}
+\end{columns}
+\end{frame}
+
+
+\begin{frame}[fragile]{Implementação em C}
+
+\centering\footnotesize
+\begin{lstlisting}[language=C]
+int list_search(int k)
+{
+   struct node *x = head;//x = L.inicio
+   int indice = 0;
+   while(x != NULL) {
+      if(x->chave == k)
+        return indice;
+      indice = indice + 1;
+      x = x->proximo;
+   }
+   return -1;
+}
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Implementação em Python}
+
+\centering\footnotesize
+\begin{lstlisting}[language=Python]
+    #Codigo Anterior
+
+    def list_search(self,k):
+        x = self.inicio;
+        while x != None and x.chave != k:
+            x = x.proximo;
+        return x;
+
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}{Análise}
+\begin{block}{Análise Assintótica}
+ 
+ \begin{itemize}
+  \item Considerando lista de tamanho $n$ 
+  \begin{description}
+  \item[Pior Caso] $O(n)$  
+ \end{description}
+
+ \end{itemize}
+
+ \end{block}
+
+
+\end{frame}
+
+
+\begin{frame}{Operações: Inserção}
+\begin{itemize}
+ \item O procedimento $List\_Insert(L,x)$ insere um elemento \textbf{x} no início da lista
+\end{itemize}
+
+\begin{center}
+ \includegraphics[bb=0 0 154 30,scale=2.2]{figs/PseudoCodeListaInsert.png}
+ % PseudoCodeListaInsert.png: 641x127 px, 300dpi, 5.43x1.08 cm, bb=0 0 154 30
+\end{center}
+
+\end{frame}
+
+\begin{frame}{Algoritmo: Inserção}
+\begin{center}
+ \includegraphics[bb=0 0 524 313,scale=0.5]{figs/PseudoCodeListaInsert2.png}
+ % PseudoCodeListaInsert2.png: 524x313 px, 72dpi, 18.49x11.04 cm, bb=0 0 524 313
+\end{center}
+
+
+\end{frame}
+
+
+\begin{frame}[fragile]{Implementação em C}
+
+\centering\footnotesize
+\begin{lstlisting}[language=C]
+void list_insert(int value) {
+   //Criacao do Nodo
+   struct node *x = (struct node*) malloc(sizeof(struct node));
+   x->chave = value;
+   x->anterior = NULL;
+   x->proximo = NULL;
+
+   if(head == NULL) {
+      head = x;//L.inicio = x
+   } else {
+      x->proximo = head;
+      if(head != NULL)
+        head->anterior = x;
+      head = x;
+      x->anterior = NULL;
+   }
+}
+
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Implementação em Python}
+
+\begin{lstlisting}[language=Python]
+    #Codigo Anterior
+
+    def list_insert(self,data):
+        x = Nodo(data);
+        # Se lista vazia entao inserir no Inicio
+        if self.inicio is None:
+            self.inicio = x
+            return;
+
+        x.proximo = self.inicio;
+        if self.inicio != None:
+            self.inicio.anterior = x;
+        self.inicio = x
+        x.anterior = None
+
+\end{lstlisting}
+\end{frame}
+
+
+\begin{frame}[fragile]{Implementação em C}
+
+\centering\footnotesize
+\begin{lstlisting}[language=C]
+void print_list() {
+   struct node *temp = head;
+   while(temp != NULL) {
+      printf("%d ", temp->chave);
+      temp = temp->proximo;
+   }
+}
+
+\end{lstlisting}
+\end{frame}
+
+
+\begin{frame}[fragile]{Implementação em Python}
+
+\centering\footnotesize
+\begin{lstlisting}[language=Python]
+
+    def print_list(self):
+        current = self.inicio
+        while current:
+            print(current.chave)
+            current = current.proximo
+
+
+
+\end{lstlisting}
+\end{frame}
+
+
+
+\begin{frame}{Análise}
+\begin{block}{Análise Assintótica}
+ 
+ \begin{itemize}
+  \item O tempo de execução para $List\_Insert(L,x)$ inserir um elemento na lista de tamanho $n$.
+  \begin{description}
+  \item[Pior Caso] $O(1)$  
+ \end{description}
+\item Qual o tempo de execução para uma lista de tamanho $n$, caso a inserção fosse no final da lista ?
+ \end{itemize}
+
+ \end{block}
+
+
+\end{frame}
+
+\begin{frame}{Operações: Remoção}
+\begin{itemize}
+ \item O procedimento $List\_Delete(L)$ remove um elemento \textbf{x} no início da lista
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Operações: Remoção}
+\begin{itemize}
+ \item O procedimento $List\_Delete(L)$ remove um elemento \textbf{x} no início da lista
+\end{itemize}
+\begin{center}
+ \includegraphics[bb=0 0 171 109,scale=1.4]{figs/RemoveElementList.png}
+ % RemoveElementList.png: 712x454 px, 300dpi, 6.03x3.84 cm, bb=0 0 171 109
+\end{center}
+
+
+\end{frame}
+
+
+
+\begin{frame}{Análise}
+\begin{block}{Análise Assintótica}
+ 
+ \begin{itemize}
+  \item O tempo de execução para $List\_Delete(L,x)$ remover um elemento na lista de tamanho $n$.
+  \begin{description}
+  \item[Melhor Caso] $O(1)$
+  \item[Pior Caso] $O(n)$
+ \end{description}
+ \end{itemize}
+
+ \end{block}
+
+
+\end{frame}
+
+
+
+
+\begin{frame}{Algoritmo: Remoção}
+\begin{center}
+ \includegraphics[bb=0 0 66 34,scale=3.2]{figs/PseudoCodeListaRemove.png}
+ % PseudoCodeListaRemove.png: 275x141 px, 300dpi, 2.33x1.19 cm, bb=0 0 66 34
+\end{center}
+\end{frame}
+
+\begin{frame}{Algoritmo: Remoção}
+\begin{center}
+ \includegraphics[bb=0 0 911 462,scale=0.3]{figs/PseudoCodeListaRemove_2.png}
+ % PseudoCodeListaRemove_2.png: 911x462 px, 72dpi, 32.14x16.30 cm, bb=0 0 911 462
+\end{center}
+
+\end{frame}
+
+
+\begin{frame}[fragile]{Implementação em C}
+
+\centering\footnotesize
+\begin{lstlisting}[language=C]
+void list_delete(int x)
+{
+   struct node *current = head;//x = L.inicio
+   while(current != NULL) {
+      if(current->chave == x)
+      {
+        if(current->anterior != NULL)
+            current->anterior->proximo = current->proximo;
+        else head = current->proximo;
+        if (current->proximo != NULL)
+            current->proximo->anterior = current->anterior;
+      }//Fim do IF
+    current = current->proximo;
+   }//Fim do While
+}//Fim do Metodo
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Implementação em Python}
+\centering\footnotesize
+\begin{lstlisting}[language=Python]
+    #Codigo Anterior
+
+def list_delete(self,x):
+  current = self.inicio;
+  while current != None:
+    if current.chave == x:
+      if current.anterior is not None:
+        current.anterior.proximo = current.proximo
+      else:
+        self.inicio = current.proximo
+      if current.proximo is not None:
+        current.proximo.anterior = current.anterior
+      return
+  current = current.proximo;
+
+\end{lstlisting}
+\end{frame}
+
+
+\section{Estrutura de Dados: Pilha e Fila}
+\subsection{Características Gerais}
+\begin{frame}
+ \begin{itemize}
+  \item São consideradas listas especializadas por possuírem características próprias.
+  \item Ambas possuem operações de próprias de inserir, excluir, encontrar o maior elemento e contar os elementos.
+  \item Dados organizados em ordem linear
+  \item Quando representadas por vetores são consideradas \textbf{estáticas}. Quando representadas por listas encadeadas com ponteiros, são consideradas \textbf{dinâmicas}
+  \item Quando formado por dado primitivo, dizemos que são estruturas \textbf{homogênea}. Quando representadas por dados compostos, dizemos que são \textbf{heterogênea}.
+ \end{itemize}
+
+\end{frame}
+
+
+
+\section{Pilha (Stack)}
+\subsection{Conceitos Gerais}
+
+\begin{frame}{Pilha (Stack): Conceitos Gerais}
+\begin{itemize}
+    \item Uma coleção ordenada de itens onde as operações ocorrem na mesma extremidade: o \textbf{topo}.
+    \item Implementa a política \textbf{LIFO (Last-In, First-Out)}: o último a entrar é o primeiro a sair.
+\end{itemize}
+\begin{center}
+\begin{tikzpicture}
+    % Representação da Pilha (cilindro)
+    \draw[thick, draw=lscText] (-1,0) -- (-1,3) -- (1,3) -- (1,0);
+
+    % Elementos da pilha usando o novo estilo 'stack_node_style'
+    \node[stack_node_style] at (0,0.5) {1};
+    \node[stack_node_style] at (0,1.5) {2};
+
+    % reticências para indicar mais elementos
+    \node[label_style, fill=white] at (0,2.5) {...};
+
+    % Setas e Rótulos
+    \draw[pointer_style, red] (-1.2, 2.5) -- node[left] {Push (Empilhar) \hspace*{0.5cm}} (-2, 2.5);
+    \draw[pointer_style, red] (1.2, 2.5) -- node[right] {\hspace*{0.5cm}Pop (Desempilhar)} (2, 2.5);
+    \node[label_style, font=\bfseries, red] at (0,3.3) {Topo};
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+\begin{frame}{Comportamento}
+
+\begin{center}
+ \includegraphics[bb=0 0 120 73,width = \linewidth]{figs/ComportamentoPilha.png}
+ % ComportamentoPilha.png: 498x305 px, 300dpi, 4.22x2.58 cm, bb=0 0 120 73
+\end{center}
+
+\end{frame}
+
+
+\begin{frame}{Análise}
+ \begin{block}{Análise da Complexidade}
+ \begin{description}
+  \item[Push/Pop] Operação de tempo constante, então temos $O(1)$
+  \item[Consulta] No pior caso, temos $O(n)$. No melhor caso temos $O(1)$
+ \end{description}
+
+ \end{block}
+
+
+\end{frame}
+
+\begin{frame}{Algoritmo}
+\begin{center}
+ \includegraphics[bb=0 0 360 440,width = 0.45\linewidth]{figs/PseudoCodePilha.png}
+ % PseudoCodePilha.png: 360x477 px, 72dpi, 12.70x16.83 cm, bb=0 0 360 477
+\end{center}
+
+\end{frame}
+
+
+\begin{frame}[fragile]{Implementação em C}
+
+\centering\footnotesize
+\begin{lstlisting}[language=C]
+#include <stdio.h>
+#include <stdlib.h>
+#include<stdbool.h>
+#define MAX_SIZE 10
+
+int stack[MAX_SIZE];
+int top = -1;
+
+bool stack_empty()
+{
+    if(top == 0)
+        return true;
+    else return false;
+}
+\end{lstlisting}
+\end{frame}
+
+
+\begin{frame}[fragile]{Implementação em C}
+
+\centering\footnotesize
+\begin{lstlisting}[language=C]
+void push(int x) {
+    if (top == MAX_SIZE - 1) {printf("Pilha cheia\n");
+        return;
+    }
+    top++;
+    stack[top] = x;
+}
+int pop() {
+    if (stack_empty()) {printf("Pilha vazia\n");
+        return -1;
+    }
+    else
+    {
+        top--;
+        return stack[top+1];
+    }
+}
+
+
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Implementação em Python}
+
+\centering\footnotesize
+\begin{lstlisting}[language=Python]
+class Stack:
+    def __init__(self):
+        self.stack = []
+        self.top = -1
+
+    def stack_empty(self):
+        if self.top == -1:
+            return True;
+        else:
+            return False;
+
+\end{lstlisting}
+\end{frame}
+
+
+\begin{frame}[fragile]{Implementação em Python}
+
+\centering\footnotesize
+\begin{lstlisting}[language=Python]
+class Stack:
+
+    # Codigo Anterior
+    def push(self, item):
+        self.top += 1
+        self.stack.insert(self.top,item)
+
+    def pop(self):
+        if self.stack_empty():
+            return None
+        item = self.stack[self.top]
+        self.top -= 1
+        self.stack.pop()
+        return item
+
+\end{lstlisting}
+\end{frame}
+
+
+
+\begin{frame}{Aplicações}
+
+\begin{itemize}
+ \item \textit{Undo/Redo} no editor de textos
+ \item Controle de chamada de funções
+\end{itemize}
+\begin{center}
+ \includegraphics[bb=0 0 168 39,scale=1.7]{figs/ChamadaFuncoes.png}
+ % ChamadaFuncoes.png: 700x161 px, 300dpi, 5.93x1.36 cm, bb=0 0 168 39
+\end{center}
+
+\end{frame}
+
+
+
+
+
+\section{Fila (Queue)}
+
+
+
+\subsection{Conceitos Gerais}
+
+\begin{frame}
+\footnotesize
+ \begin{itemize}
+ \item Uma fila é uma coleção ordenada de zero ou mais itens, de um mesmo tipo ou não, tal que suas operações principais, \underline{inserção} e \underline{remoção}, são realizadas nas extremidades, denominadas \textbf{INICIO (CABEÇA)} e \textbf{FIM (CAUDA)} .
+  \item Implementa a política de\textbf{ primeiro a entrar, primeiro a sair} ou FIFO (\textit{first-in, first-out}).
+ \end{itemize}
+\begin{center}
+    % O único ajuste é trocar 'node_style' por 'stack_node_style'
+    \begin{tikzpicture}[node distance=0.3cm]
+        \node[label_style] (enqueue_label) {Enqueue};
+        % Nó que vai entrar na fila
+        \node[stack_node_style, left=0cm of enqueue_label, fill=lscgreenFonte!70] (new) {};
+
+        % Nós que representam a fila
+
+        \node[stack_node_style,right=0.2cm of enqueue_label,yshift=-1cm] (back) {};
+        \node[stack_node_style, right=of back] (n1) {};
+        \node[stack_node_style, right=of n1] (front) {};
+
+        % Nó que vai sair da fila
+        \node[stack_node_style, right= 1cm of front, fill=lscgreenFonte!70,yshift=1cm] (old) {};
+        \node[label_style, right=0.1cm of old] {Dequeue};
+
+        \draw[pointer_style, red] (new) -- (back);
+        \draw[pointer_style, red] (front) -- (old);
+
+        \node[label_style, above=0.3cm of back] {Final};
+        \node[label_style, above=0.3cm of front] {Início};
+    \end{tikzpicture}
+\end{center}
+
+
+\end{frame}
+
+\begin{frame}
+ \begin{block}{Operações}
+  \begin{description}
+   \item[\textit{Enqueue} (Enfileirar)] Insere um novo item no \textbf{início} da estrutura
+   \item[\textit{Dequeue} (Desinfileirar)] Remove um item no \textbf{fim} da estrutura
+  \end{description}
+ \end{block}
+
+
+
+\end{frame}
+
+
+\begin{frame}{Comportamento}
+
+\begin{description}
+ \item[Início] aponta para o primeiro da fila, ou seja, o
+primeiro elemento a sair
+\item [Fim] aponta para o fim da fila, ou seja, onde o
+próximo elemento entrará
+\end{description}
+
+\end{frame}
+
+\begin{frame}{Comportamento}
+
+\begin{center}
+ \includegraphics[bb=0 0 112 55,width=0.6\textwidth]{figs/ComportamentoFila_2.png}
+ % ComportamentoFila_2.png: 468x228 px, 300dpi, 3.96x1.93 cm, bb=0 0 112 55
+\end{center}
+
+
+\end{frame}
+
+\begin{frame}{Comportamento}
+\begin{itemize}
+ \item $Enqueue(A)\rightarrow Enqueue(B)\rightarrow Enqueue(C)$
+\end{itemize}
+
+
+\begin{center}
+ \includegraphics[bb=0 0 109 55,width=0.6\textwidth]{figs/ComportamentoFila_3.png}
+ % ComportamentoFila_3.png: 456x231 px, 300dpi, 3.86x1.96 cm, bb=0 0 109 55
+\end{center}
+
+
+\end{frame}
+
+\begin{frame}{Comportamento}
+\begin{itemize}
+ \item $Enqueue(Z)\rightarrow Enqueue(R)\rightarrow Enqueue(S)$
+\end{itemize}
+
+
+\begin{center}
+ \includegraphics[bb=0 0 112 55,width=0.6\textwidth]{figs/ComportamentoFila_4.png}
+ % ComportamentoFila_4.png: 467x228 px, 300dpi, 3.95x1.93 cm, bb=0 0 112 55
+\end{center}
+
+
+
+\end{frame}
+
+
+\begin{frame}{Comportamento}
+\begin{itemize}
+ \item $Dequeue()\rightarrow Dequeue()$
+\end{itemize}
+
+\begin{center}
+ \includegraphics[bb=0 0 112 55,width=0.6\textwidth]{figs/ComportamentoFila_5.png}
+ % ComportamentoFila_4.png: 467x228 px, 300dpi, 3.95x1.93 cm, bb=0 0 112 55
+\end{center}
+
+
+
+\end{frame}
+
+
+\begin{frame}{Comportamento}
+\begin{itemize}
+ \item Temos algumas questões ?
+ \begin{itemize}
+  \item Como reutilizar os espaços do início da fila?
+  \item Como inserir mais elementos?
+ \end{itemize}
+
+\end{itemize}
+
+\begin{center}
+ \includegraphics[bb=0 0 112 55,width=0.6\textwidth]{figs/ComportamentoFila_5.png}
+ % ComportamentoFila_4.png: 467x228 px, 300dpi, 3.95x1.93 cm, bb=0 0 112 55
+\end{center}
+
+\end{frame}
+
+\begin{frame}{Comportamento: Fila Circular}
+\footnotesize
+\begin{itemize}
+  \item A \textbf{Fila Circular} otimiza o uso de um vetor, tratando-o como um círculo.
+  \item Permite reutilizar os espaços liberados no início do vetor.
+  \item O cálculo dos índices `inicio` e `fim` geralmente usa o operador módulo.
+\end{itemize}
+\begin{center}
+\begin{tikzpicture}
+    \def\numsectors{6}
+    \def\radius{1.7cm}
+    \foreach \i [count=\j] in {A, B, C, D, ,} {
+        \draw[thick, draw=lscText] ({360/\numsectors * (\j-1)}:\radius) arc ({360/\numsectors * (\j-1)}:{360/\numsectors * \j}:\radius) -- (0,0) -- cycle;
+        \node[label_style] at ({360/\numsectors * (\j-0.5)}: \radius*0.8) {\huge \i};
+        \node[label_style, font=\bfseries] at ({360/\numsectors * (\j-0.5)}: \radius*1.2) {\j};
+    }
+    \draw[pointer_style, thick, red] (34:\radius*1.5) -- node[above right,yshift=0.2cm] {início} (34:\radius*1.05);
+    \draw[pointer_style, thick, red] (240:\radius*1.5) -- node[below left,yshift=-0.2cm] {fim} (240:\radius*1.05);
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+
+\begin{frame}{Comportamento}
+\footnotesize
+\begin{itemize}
+  \item \textbf{Fila em vetor circular}
+  \begin{itemize}
+   \item Qual a condição para fila vazia? para fila cheia ?  Qual a condição inicial (quando a fila é criada)?
+  \end{itemize}
+
+ \end{itemize}
+
+\begin{center}
+\begin{tikzpicture}
+    \def\numsectors{6}
+    \def\radius{1.7cm}
+    \foreach \i [count=\j] in {A, B, C, D, ,} {
+        \draw[thick, draw=lscText] ({360/\numsectors * (\j-1)}:\radius) arc ({360/\numsectors * (\j-1)}:{360/\numsectors * \j}:\radius) -- (0,0) -- cycle;
+        \node[label_style] at ({360/\numsectors * (\j-0.5)}: \radius*0.8) {\huge \i};
+        \node[label_style, font=\bfseries] at ({360/\numsectors * (\j-0.5)}: \radius*1.2) {\j};
+    }
+    \draw[pointer_style, thick, red] (34:\radius*1.5) -- node[above right,yshift=0.2cm] {início} (34:\radius*1.05);
+    \draw[pointer_style, thick, red] (240:\radius*1.5) -- node[below left,yshift=-0.2cm] {fim} (240:\radius*1.05);
+\end{tikzpicture}
+\end{center}
+
+\end{frame}
+
+\begin{frame}{Algoritmo}
+\begin{center}
+ \includegraphics[bb=0 0 644 536,scale=0.35]{figs/PseudoCodeFila1.png}
+ % PseudoCodeFila1.png: 644x536 px, 72dpi, 22.72x18.91 cm, bb=0 0 644 536
+\end{center}
+\end{frame}
+
+
+\begin{frame}{Algoritmo}
+\begin{center}
+ \includegraphics[bb=0 0 644 536,scale=0.35]{figs/PseudoCodeFila2.png}
+ % PseudoCodeFila1.png: 644x536 px, 72dpi, 22.72x18.91 cm, bb=0 0 644 536
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Implementação em C}
+
+\centering\footnotesize
+\begin{lstlisting}[language=C]
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX_SIZE 10
+
+int queue[MAX_SIZE];
+int inicio = 0;
+int fim = -1;
+int size = 0;//Tamanho
+
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Implementação em C}
+
+\centering\footnotesize
+\begin{lstlisting}[language=C]
+void enqueue(int value) {
+    if (size == MAX_SIZE) {//Fila Cheia
+        return;
+    }
+    fim = (fim + 1);
+    queue[fim] = value;
+    size++;
+}
+int dequeue() {
+    if (inicio > fim) {//Fila Vazia
+        return -1;
+    }
+    int value = queue[inicio];
+    inicio = (inicio + 1);
+    size--;
+    return value;
+}
+
+\end{lstlisting}
+\end{frame}
+
+
+\begin{frame}[fragile]{Implementação em Python.}
+
+\centering\footnotesize
+\begin{lstlisting}[language=Python]
+class Fila:
+    def __init__(self, tamanho_maximo):
+        self.tamanho_maximo = tamanho_maximo
+        self.fila = []
+        self.inicio = 0
+        self.fim = -1
+
+    def queue_empty(self):
+        return self.fim < self.inicio
+
+    def queue_isFull(self):
+        return len(self.fila) == self.tamanho_maximo
+
+    def print_front(self):
+        if not self.queue_empty():
+            print(self.fila[self.inicio])
+
+
+\end{lstlisting}
+\end{frame}
+
+
+\begin{frame}[fragile]{Implementação em Python.}
+
+\centering\footnotesize
+\begin{lstlisting}[language=Python]
+class Fila:
+
+    def enqueue(self, valor):
+        if not self.queue_isFull():
+            self.fim += 1
+            self.fila.insert(self.fim,valor)
+    def dequeue(self):
+        if not self.queue_empty():
+            valor = self.fila[self.inicio]
+            self.inicio += 1
+            return valor
+
+
+\end{lstlisting}
+\end{frame}
+
+
+\begin{frame}{Análise}
+ \begin{block}{Análise da Complexidade}
+ \begin{description}
+  \item[\textit{Enqueue}] é uma operação básica, como a de atribuição, e atualização de índices. Logo é uma operação de tempo constante, $O(1)$ 
+  \item[\textit{Dequeue}] $O(1)$
+  \item [Consulta a Fila] Como esta operação percorre toda a estrutura de tamanho ``n'', seu tempo de execução é $O(n)$ 
+ \end{description}
+
+ \end{block}
+
+
+\end{frame}
+
+\begin{frame}{Aplicações}
+
+\begin{itemize}
+ \item Em computação gráfica, uma aplicação interessante é o algoritmo para colorir regiões gráficas, que consiste em varrer uma matriz de pontos, enfileirar os pontos conectados a esse e trocar a cor, após remover cada um da fila.
+ \begin{center}
+ \includegraphics[bb=0 0 165 46]{figs/AppFila.png}
+ % AppFila.png: 686x191 px, 300dpi, 5.81x1.62 cm, bb=0 0 165 46
+\end{center}
+
+\item Cálculo de distância em Grafos.
+\end{itemize}
+
+\end{frame}
+
+\section{Trabalho 1 - Estruturas Genéricas.}
+\begin{frame}
+\begin{itemize}
+ \item Selecione uma questão e faça:
+
+ \begin{enumerate}
+  %\item Você pode implementar a operação de conjuntos dinâmicos \textit{INSERT} em uma \underline{lista simplesmente encadeada} em tempo \textbf{O(1)}? E a operação DELETE ?
+  % \item Implemente uma pilha usando uma lista simplesmente encadeada As operações PUSH e POP ainda devem demorar o tempo $O(1)$
+    \item Implemente uma pilha usando uma lista simplesmente encadeada.
+    \item Implemente uma fila usando uma lista simplesmente encadeada.
+%
+%  \item Implemente uma fila usando uma lista simplesmente encadeada As operações ENQUEUE e DEQUEUE ainda devem demorar o tempo $O(1)$
+ %\item Dê um procedimento não recursivo de tempo $\Theta(n)$ que inverta uma lista simplesmente encadeada de $n$ elementos. O procedimento só pode usar armazenamento constante além do necessário para a própria lista
+%  \item Mostre como implementar uma fila usando duas pilhas. Analise o tempo de execução das operações nessa fila.
+ \end{enumerate}
+ \item Faça a lista usando Ponteiro ou autoreferência (Veja nos Livros).
+ \end{itemize}
+
+
+\end{frame}
+\section{Referências Bibliográficas}
+\begin{frame}[t,allowframebreaks]
+\frametitle{Referências}
+%\bibliographystyle{amsalpha}
+%\bibliography{bibfile}
+\begin{thebibliography}{*}
+
+        \bibitem[A01]{A01} Lee K.D., Hubbard S. (2015) Trees. In: Data Structures and Algorithms with Python. Undergraduate Topics in Computer Science. Springer, Cham. Retrieved from \url{https://doi.org/10.1007/978-3-319-13072-9_6}
+        
+        \bibitem[A02]{A02}Hubbard, J. (2007). Schaum’s Outline sof Data Structures with Java. Retrieved from \url{http://www.amazon.com/Schaums-Outline-Data-Structures-Java/dp/0071476989}
+        
+        \bibitem[A03]{A03} Cormen, T. H., Leiserson, C. E., \& Stein, R. L. R. E. C. (2012). Algoritmos: teoria e prática. Retrieved from \url{https://books.google.com.br/books?id=6iA4LgEACAAJ}.
+        
+        \bibitem[A04]{A04} Ascenio, Ana Fernanda Gomes. Estrutura de dados: Algoritmos, análise da complexidade e implementações em Java e C++. São Paulo: Pearson Prentice Hall, 2010.
+        
+        \bibitem[A06]{A06} Szwarcfiter, Jayme Luiz. Estruturas de dados e seus algoritmos / Jayme Luiz Szwarcfiter, Lilian Markenzon. 3.ed. [Reimpr.]. - Rio de Janeiro : LTC, 2015.
+        \bibitem[A07]{A07} Capítulo 20: Árvores — documentação Aprenda Computação com Python 3.0 2009.1. Retrieved from  \url{https://mange.ifrn.edu.br/python/aprenda-com-py3/capitulo_20.html}
+\end{thebibliography}
+\end{frame}
+\section{}
+
+%remover logo
+\setbeamertemplate{logo}{}
+\begin{frame}
+\titlepage
+\end{frame}
+
+\end{document}

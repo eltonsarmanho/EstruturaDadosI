@@ -1,0 +1,842 @@
+\documentclass{beamer}
+\setbeamerfont{headline}{size=\footnotesize}
+
+\mode<presentation>{
+\usetheme{Montpellier}
+\setbeamercovered{transparent}
+\usecolortheme{lsc}
+}
+
+\mode<handout>{
+  \usepackage[bar]{beamerthemetree}
+  \beamertemplatesolidbackgroundcolor{black!5}
+}
+
+\usepackage{amsmath,amssymb}
+\usepackage[brazil]{varioref}
+\usepackage[english,brazil]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{fontawesome}
+\usepackage{tikz}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{colortbl}
+\usepackage{caption}
+\usepackage{transparent}
+\usepackage{multirow}
+\usepackage{listings} % Para código
+
+
+% Configurações para o bloco de código
+\lstset{
+  basicstyle=\ttfamily\small,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue},
+  stringstyle=\color{red},
+  showstringspaces=false,
+  breaklines=true,
+  frame=single,
+  framesep=5pt,
+  backgroundcolor=\color{white},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  tabsize=2,
+  columns=fullflexible,
+  literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+           {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+           {ã}{{\~a}}1 {õ}{{\~o}}1 {ç}{{\c{c}}}1 {Ç}{{\c{C}}}1
+           {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+}
+
+% TikZ libraries for drawing
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, calc, shadows, decorations.pathreplacing,matrix, arrows.meta, positioning, chains}
+
+\beamertemplatetransparentcovereddynamic
+\addtobeamertemplate{title page}{\centering{ \includegraphics[width=1.25cm]{figs/logo.png}}}{}
+\title[Estrutura de Dados I]{Ordenação}
+\author[Elton Sarmanho]{
+Professor: Elton Sarmanho\inst{1}
+\newline
+E-mail: \href{mailto:eltonss@ufpa.br}{eltonss@ufpa.br}\newline
+\href{https://github.com/eltonsarmanho}{\faGithub} \href{https://www.linkedin.com/in/elton-sarmanho-836553185/}{\faLinkedinSquare}
+}
+\institute[UFPA]{
+   \inst{1}%
+     Faculdade de Sistemas de Informação - UFPA/CUTINS
+     }
+
+\date{\today}
+\pgfdeclareimage[height= 1.25 cm]{inf}{figs/logo.png}
+\logo{{\transparent{0.35}\pgfuseimage{inf}}}
+
+\expandafter\def\expandafter\insertshorttitle\expandafter{%
+  \insertshorttitle\hfill%
+  \insertframenumber\,/\,\inserttotalframenumber}
+
+% TikZ Styles
+\tikzstyle{arraynode}=[draw, minimum size=0.7cm, font=\bfseries]
+\tikzstyle{highlight}=[fill=blue!30]
+\tikzstyle{sorted}=[fill=green!30]
+\tikzstyle{pivot}=[fill=orange!40]
+\tikzstyle{pointer}=[->, >=Latex, thick, blue!80]
+\tikzstyle{info_text} = [font=\small\itshape, text width=3cm]
+
+\begin{document}
+\setbeamertemplate{logo}{}
+\begin{frame}
+\titlepage
+\end{frame}
+\logo{{\transparent{0.35}\pgfuseimage{inf}}}
+
+\begin{frame}
+\frametitle{Roteiro}
+\tableofcontents[sections={1-2}]
+\end{frame}
+
+\begin{frame}
+\frametitle{Roteiro}
+\tableofcontents[sections={3-4}]
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Conceitos Gerais}
+\subsection{Objetivos}
+\begin{frame}{Objetivos da Aula}
+\begin{itemize}
+ \item Esta aula apresenta os conceitos fundamentais de ordenação e os principais algoritmos descritos na literatura.
+ \item Ao final, você deverá ser capaz de:
+ \begin{itemize}
+  \item Compreender o processo de comparação e movimentação de elementos em um algoritmo de ordenação.
+  \item Analisar e comparar o desempenho dos diferentes algoritmos.
+  \item Identificar aplicações reais onde a ordenação é fundamental.
+ \end{itemize}
+\end{itemize}
+\end{frame}
+
+\subsection{Definição}
+\begin{frame}{Ordenação, Classificação e Organização}
+\begin{itemize}
+ \item Um \textbf{algoritmo de ordenação} reorganiza uma coleção de itens em uma ordem específica (crescente ou decrescente). A entrada é uma lista, e a saída é uma permutação dessa mesma lista, mas ordenada.
+ \item A organização de dados é um pilar em ciência da computação:
+ \begin{itemize}
+  \item Algoritmos de busca (como a busca binária), fusão de listas e outros processos dependem de dados previamente ordenados.
+  \item Aplicações em bancos de dados, geometria computacional e bioinformática necessitam de listas ordenadas para operar eficientemente.
+ \end{itemize}
+ \item Para humanos, dados ordenados são mais fáceis de ler, interpretar e analisar.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Condições de Saída}
+\begin{itemize}
+ \item A saída de um algoritmo de ordenação deve satisfazer duas condições cruciais:
+ \begin{enumerate}
+  \item \textbf{Ordem:} A lista final deve estar em uma ordem específica (ex: não decrescente).
+  \item \textbf{Permutação:} A lista final deve conter exatamente os mesmos elementos da lista original, apenas reorganizados.
+ \end{enumerate}
+\end{itemize}
+\begin{center}
+\begin{tikzpicture}[scale=0.8, transform shape]
+
+    % Unsorted Array
+    \foreach \val/\idx in {6/1, 5/2, 7/3, 1/4, 4/5, 3/6, 2/7} {
+      \node[arraynode] (unsorted-\idx) at (\idx, 0) {\val};
+    }
+    % Rótulo para a entrada (acima do primeiro elemento)
+    \node[info_text, above=0.5cm of unsorted-1] {Entrada (não ordenada):};
+
+    % Arrow
+    \draw[->, very thick, blue!60, decorate, decoration={snake,amplitude=.4mm,segment length=2mm,post length=1mm}] (4, -0.5) -- (4, -2);
+
+    % Sorted Array
+    \foreach \val/\idx in {1/1, 2/2, 3/3, 4/4, 5/5, 6/6, 7/7} {
+      \node[arraynode, sorted] (sorted-\idx) at (\idx, -2.5) {\val};
+    }
+    % Rótulo para a saída (abaixo do primeiro elemento ordenado)
+    \node[info_text, below=0cm of sorted-1] {Saída (ordenada):};
+
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+\begin{frame}{Motivação}
+\begin{itemize}
+ \item O estudo de algoritmos de ordenação é fundamental para a formação em computação:
+\begin{itemize}
+ \item Solidifica conceitos teóricos importantes:
+ \begin{itemize}
+  \item Notação Assintótica (Big O).
+  \item Análise de pior caso, melhor caso e caso médio.
+  \item O balanço (trade-off) entre tempo de execução e uso de memória.
+ \end{itemize}
+ \item Como a ordenação é um passo intermediário em muitos algoritmos complexos, é crucial conhecer os métodos mais eficientes para cada cenário.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\subsection{Terminologia}
+\begin{frame}{Terminologia Essencial}
+\begin{itemize}
+ \item \textbf{Entrada}: Uma sequência de $n$ itens, como $r[0], r[1], ..., r[n-1]$.
+ \item \textbf{Registro}: Cada item individual na coleção a ser ordenada.
+ \item \textbf{Chave}: Um campo ou valor associado a um registro, sobre o qual a ordenação é realizada. Por exemplo, ordenar uma lista de pessoas pela sua idade.
+ \item \textbf{Ordenação interna vs. externa}:
+    \begin{itemize}
+        \item \textbf{Interna}: Ocorre quando todos os dados cabem na memória principal (RAM).
+        \item \textbf{Externa}: Necessária quando os dados são muito volumosos e precisam ser mantidos em memória secundária (disco), sendo processados em partes.
+    \end{itemize}
+ \item \textbf{Estabilidade}: Um algoritmo é \textbf{estável} se ele preserva a ordem relativa original de registros com chaves iguais.
+\end{itemize}
+\end{frame}
+
+\subsection{Eficiência}
+\begin{frame}{Medindo a Eficiência}
+\begin{itemize}
+    \item A eficiência de um algoritmo de ordenação é tipicamente medida através de:
+    \begin{itemize}
+        \item \textbf{Complexidade de tempo}: Quantas operações o algoritmo executa em função do tamanho da entrada ($n$).
+        \item \textbf{Complexidade de espaço}: Quanta memória adicional é necessária.
+    \end{itemize}
+    \item Para analisar o tempo, contamos as \textbf{operações críticas}:
+    \begin{itemize}
+        \item \textbf{Comparações}: O número de vezes que chaves são comparadas entre si.
+        \item \textbf{Movimentações/Trocas}: O número de vezes que registros são movidos ou trocados de posição.
+    \end{itemize}
+    \item O \textbf{tamanho da entrada ($n$)} é o número de registros a serem ordenados.
+\end{itemize}
+\end{frame}
+
+\section{Algoritmos Elementares}
+\subsection{Ordenação por Flutuação (Bubble Sort)}
+\begin{frame}{Bubble Sort: Estratégia}
+\begin{itemize}
+ \item Compara repetidamente pares de elementos adjacentes.
+ \item Se estiverem na ordem errada, eles são trocados.
+ \item A cada passagem completa, o maior elemento da porção não ordenada "flutua" para sua posição correta no final da lista.
+
+\end{itemize}
+\begin{center}
+ \includegraphics[bb=0 0 1144 737,width=0.6\linewidth]{figs/EstrategiaBubbleSort.png}
+ % EstrategiaBubbleSort.png: 1144x737 px, 72dpi, 40.36x26.00 cm, bb=0 0 1144 737
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Bubble Sort: Algoritmo}
+\begin{lstlisting}
+funcao BubbleSort(A, tamanho)
+  para i de 0 ate tamanho-2 faca
+    // A cada passagem, o i-esimo maior elemento
+    // eh colocado em sua posicao
+    para j de 0 ate tamanho-i-2 faca
+      // Compara elementos adjacentes
+      se A[j] > A[j+1] entao
+        troca(A[j], A[j+1])
+      fim se
+    fim para
+  fim para
+fim funcao
+\end{lstlisting}
+\begin{itemize}
+    \item \textbf{Estabilidade}: Sim, a versão padrão do Bubble Sort é estável.
+
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Bubble Sort: Análise}
+\begin{itemize}
+    \item O número de comparações é fixo para a versão não otimizada.
+    \item O laço externo roda $n-1$ vezes e o interno também, diminuindo a cada passo.
+    \item \textbf{Comparações} (Todos os Casos):
+    $$C(n) = (n-1) + (n-2) + \dots + 1 = \sum_{i=1}^{n-1} i = \frac{n(n-1)}{2}$$
+    Portanto, a complexidade é sempre $O(n^2)$ para comparações.
+    \item \textbf{Trocas}:
+    \begin{itemize}
+        \item \textbf{Melhor Caso} (lista ordenada): 0 trocas.
+        \item \textbf{Pior Caso} (ordem reversa): $\frac{n(n-1)}{2}$ trocas.
+    \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Bubble Sort: Análise}
+\begin{block}{Análise Assintótica}
+\begin{itemize}
+    \item Mesmo com otimizações, a complexidade geral do Bubble Sort é $O(n^2)$.
+    \item É raramente usado em prática para problemas sérios, mas é um bom algoritmo para fins didáticos.
+\end{itemize}
+\end{block}
+\end{frame}
+
+
+\subsection{Ordenação por Inserção (Insertion Sort)}
+\begin{frame}{Insertion Sort: Estratégia}
+\begin{itemize}
+ \item Percorre-se o vetor da esquerda para a direita. Cada elemento é "inserido" na sua posição correta dentro da sub-lista já ordenada à esquerda.
+\end{itemize}
+\begin{center}
+ \includegraphics[bb=0 0 3508 2480,scale=0.05]{figs/EstrategioInsertSort.jpg}
+ % EstrategioInsertSort.jpg: 3508x2480 px, 72dpi, 123.75x87.49 cm, bb=0 0 3508 2480
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+\begin{lstlisting}
+funcao InsertionSort(A, tamanho)
+  para j de 1 ate tamanho-1 faca
+    chave = A[j]  // O elemento a ser inserido
+    i = j - 1     // O fim da sub-lista ordenada
+
+    // Move os elementos maiores que a chave
+    enquanto (i >= 0) e (A[i] > chave) faca
+      A[i+1] = A[i]
+      i = i - 1
+    fim enquanto
+
+    A[i+1] = chave // Insere a chave
+  fim para
+fim funcao
+\end{lstlisting}
+\begin{itemize}
+\item \textbf{Estabilidade}: Sim, o Insertion Sort é um algoritmo estável.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Insertion Sort: Análise}
+\begin{block}{Análise de Complexidade}
+\begin{itemize}
+    \item \textbf{Melhor Caso}: A lista já está ordenada.
+    \begin{itemize}
+        \item Comparações: O laço `enquanto` nunca executa seu corpo. $n-1$ comparações. Complexidade: $O(n)$.
+        \item Movimentações: Nenhuma troca é necessária.
+    \end{itemize}
+    \item \textbf{Pior Caso}: A lista está em ordem reversa.
+    \begin{itemize}
+        \item Comparações: Para cada elemento $j$, são feitas $j-1$ comparações. Total: $\sum_{k=1}^{n-1} k = \frac{n(n-1)}{2}$. Complexidade: $O(n^2)$.
+        \item Movimentações: Similar às comparações. Complexidade: $O(n^2)$.
+    \end{itemize}
+    \item \textbf{Caso Médio}: Complexidade de $O(n^2)$ para comparações e trocas.
+\end{itemize}
+\end{block}
+\begin{itemize}
+\item É muito eficiente para listas \textbf{pequenas} ou \textbf{"quase ordenadas"}.
+\end{itemize}
+\end{frame}
+
+
+\subsection{Selection Sort (Ordenação por Seleção)}
+\begin{frame}{Selection Sort: Estratégia}
+ \begin{itemize}
+  \item Divide a lista em duas partes: uma sub-lista ordenada à esquerda e uma sub-lista não ordenada à direita.
+  \item Em cada iteração, encontra o \textbf{menor} elemento na sub-lista não ordenada.
+  \item Troca esse menor elemento com o primeiro elemento da sub-lista não ordenada.
+  \item A fronteira da sub-lista ordenada avança uma posição para a direita.
+ \end{itemize}
+
+\end{frame}
+
+\begin{frame}{Estratégia}
+ \begin{center}
+ \includegraphics[bb=0 0 518 242,width=\textwidth]{figs/EstrategiaSelectionSort.jpg}
+ % EstrategiaSelectionSort.jpg: 690x323 px, 96dpi, 18.26x8.55 cm, bb=0 0 518 242
+\end{center}
+
+\end{frame}
+
+\begin{frame}[fragile]{Selection Sort: Algoritmo}
+\begin{lstlisting}
+funcao SelectionSort(A, tamanho)
+  para i de 0 ate tamanho-2 faca
+    // Encontra o indice do menor elemento restante
+    min_idx = i
+    para j de i+1 ate tamanho-1 faca
+      se A[j] < A[min_idx] entao
+        min_idx = j
+      fim se
+    fim para
+
+    // Troca o menor encontrado com o primeiro
+    // elemento da parte nao ordenada
+    troca(A[i], A[min_idx])
+  fim para
+fim funcao
+\end{lstlisting}
+\begin{itemize}
+    \item \textbf{Estabilidade}: Não, a implementação padrão não é estável.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\begin{block}{Análise de Complexidade}
+\begin{itemize}
+    \item \textbf{Comparações}: O número de comparações é independente da ordem inicial dos dados.
+    \begin{itemize}
+        \item Os laços aninhados resultam em $\sum_{i=0}^{n-1} (n-1-i) = \frac{n(n-1)}{2}$ comparações.
+        \item A complexidade é sempre $\Theta(n^2)$.
+    \end{itemize}
+    \item \textbf{Trocas}:
+    \begin{itemize}
+        \item O número de trocas é no máximo $n-1$, uma por iteração do laço externo.
+        \item Isso faz do Selection Sort uma boa escolha quando o custo de mover os dados é muito alto.
+    \end{itemize}
+\end{itemize}
+\end{block}
+\begin{block}{Análise Assintótica}
+ \begin{itemize}
+    \item O tempo de execução é sempre $\Theta(n^2)$, independentemente da entrada.
+ \end{itemize}
+\end{block}
+\end{frame}
+
+
+\subsection{Ordenação Rápida (Quick Sort)}
+\begin{frame}{Quick Sort: Características}
+\begin{itemize}
+ \item Um algoritmo recursivo baseado na estratégia de \textbf{dividir para conquistar}.
+ \item Geralmente, é o mais rápido entre os algoritmos de ordenação baseados em comparação para dados em memória.
+ \begin{itemize}
+  \item \textbf{Caso Médio}: $\Theta(n \log n)$
+  \item \textbf{Pior Caso}: $\Theta(n^2)$ (mas é raro com boas estratégias de pivô)
+ \end{itemize}
+ \item O núcleo do método é a rotina de \textbf{particionamento}.
+  \begin{itemize}
+  \item A partição rearranja a lista em torno de um elemento \textbf{pivô}, de modo que todos os elementos à esquerda do pivô são menores, e todos à direita são maiores.
+ \end{itemize}
+ \item \textbf{Conquistar}: As duas sub-listas (à esquerda e à direita do pivô) são ordenadas recursivamente.
+ \item \textbf{Combinar}: Nenhum trabalho é necessário! A ordenação ocorre "no lugar" (in-place).
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\begin{lstlisting}[mathescape=true]
+funcao QuickSort(A, inicio, fim)
+  se inicio < fim entao
+    // P recebe o index do pivo que agora esta na posição correta
+    p = Particao(A, inicio, fim)
+
+    // Ordena recursivamente a sub-lista a esquerda de P
+    QuickSort(A, inicio, p - 1)
+
+    // Ordena recursivamente a sub-lista a direita de P
+    QuickSort(A, p + 1, fim)
+  fim se
+fim funcao
+\end{lstlisting}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\begin{lstlisting}[mathescape=true]
+funcao Particao(A, inicio, fim)
+  pivo = A[fim]//Estratégia: o ultimo elemento pivo
+  // Começa no início do sub-array.
+  i = inicio
+  // 'j' percorre sub-array p/ encontrar elementos < P.
+  para j de inicio ate fim - 1 faca
+    // Se um elemento menor que o pivo e encontrado
+    se A[j] < pivo entao
+      troca(A[i], A[j])//Faz swap
+      i = i + 1//avanca p/ proxima posicao.
+    fim se
+  fim para
+  // Ao final,os elementos antes de 'i' sao menores que P.
+  // Coloca P em sua posicao final correta, swap com A[i].
+  troca(A[i], A[fim])
+  // Retorna o index onde P foi colocado.
+  retorne i
+fim funcao
+\end{lstlisting}
+\begin{itemize}
+    \item \textbf{Estabilidade}: Não, o Quick Sort geralmente não é estável.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Quicksort - Início da Partição}
+\centering
+\begin{tikzpicture}[
+    node distance=8mm and 12mm,
+    array/.style={
+        matrix of nodes,
+        nodes={draw, minimum size=8mm, anchor=center, font=\large},
+        row sep=0pt,
+        column sep=-\pgflinewidth
+    },
+    pivot/.style={fill=orange!40},
+    less/.style={fill=green!30},
+    greater/.style={fill=yellow!40},
+    sorted/.style={fill=cyan!30},
+    pointer/.style={-Stealth, blue, thick},
+    legendbox/.style={draw, minimum size=6mm},
+    info/.style={align=left, font=\small\itshape, text width=4cm}
+]
+
+% Legenda
+\begin{scope}[start chain=legend_chain going right, node distance=2mm]
+    \node[on chain, legendbox, less]{};
+    \node[on chain, right=of legend_chain-1, anchor=west] {$<$pivô};
+    \node[on chain, legendbox, greater, left=of legend_chain-2, xshift=2cm]{};
+    \node[on chain, right=of legend_chain-3, anchor=west] {$>$pivô};
+    \node[on chain, legendbox, pivot, left=of legend_chain-4, xshift=2cm]{};
+    \node[on chain, right=of legend_chain-5, anchor=west] {Pivô};
+    \node[on chain, legendbox, sorted, left=of legend_chain-6, xshift=2cm]{};
+    \node[on chain, right=of legend_chain-7, anchor=west] {Posição final};
+\end{scope}
+
+% Estado inicial
+\matrix[array, below=of legend_chain-1] (init) {
+   5 & 3 & 8 & 4 & |[pivot]| 6 \\
+};
+\node[info, right=of init] (desc1) {Pivô = 6. Ponteiros i e j iniciam nas posições 0 e 1. \newline\newline Verifica A[j] $<$ Pivô, caso verdadeiro então faz swap com A[i]};
+\node[below=3mm of init-1-1] (i0) {i};
+\node[below=3mm of init-1-2] (j0) {j};
+\draw[pointer] (i0.north) -- (init-1-1.south);
+\draw[pointer] (j0.north) -- (init-1-2.south);
+
+\end{tikzpicture}
+\end{frame}
+
+% --- Slide 2: Passo 1 ---
+\begin{frame}[fragile]
+\frametitle{Passo 1: j $<$ pivô}
+\centering
+\begin{tikzpicture}[array/.style={
+        matrix of nodes,
+        nodes={draw, minimum size=8mm, anchor=center, font=\large},
+        row sep=0pt,
+        column sep=-\pgflinewidth
+    },
+    pivot/.style={fill=orange!40},
+    less/.style={fill=green!30},
+    pointer/.style={-Stealth, blue, thick},
+    swap/.style={-Stealth, red, thick, bend left=40},
+    info/.style={align=left, font=\small\itshape, text width=4cm}
+]
+
+\matrix[array] (step1) {
+   |[less]| 3 & 5 & 8 & 4 & |[pivot]| 6 \\
+};
+\node[info, right=of step1] (desc2) {Incrementa i e j.\newline\newline Verifica A[j] $<$ Pivô, caso verdadeiro então faz swap com A[i]};
+\node[below=3mm of step1-1-2] (i1) {i};
+\node[below=3mm of step1-1-3] (j1) {j};
+\draw[pointer] (i1.north) -- (step1-1-2.south);
+\draw[pointer] (j1.north) -- (step1-1-3.south);
+
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Passo 1: j $<$ pivô}
+\centering
+\begin{tikzpicture}[array/.style={
+        matrix of nodes,
+        nodes={draw, minimum size=8mm, anchor=center, font=\large},
+        row sep=0pt,
+        column sep=-\pgflinewidth
+    },
+    pivot/.style={fill=orange!40},
+    less/.style={fill=green!30},
+    pointer/.style={-Stealth, blue, thick},
+    swap/.style={-Stealth, red, thick, bend left=40},
+    info/.style={align=left, font=\small\itshape, text width=4cm}
+]
+
+\matrix[array] (step1) {
+   |[less]| 3 & 5 & 8 & 4 & |[pivot]| 6 \\
+};
+\node[info, right=of step1] (desc2) {Incrementa i e j.\newline\newline Verifica A[j] $<$ Pivô, caso verdadeiro então faz swap com A[i] \newline\newline Incrementa j };
+\node[below=3mm of step1-1-2] (i1) {i};
+\node[below=3mm of step1-1-3] (j1) {j};
+\draw[pointer] (i1.north) -- (step1-1-2.south);
+\draw[pointer] (j1.north) -- (step1-1-3.south);
+
+\end{tikzpicture}
+\end{frame}
+
+% --- Slide 3: Passo 2 ---
+\begin{frame}[fragile]
+\frametitle{Passo 2: j $>$ pivô}
+\centering
+\begin{tikzpicture}[array/.style={
+        matrix of nodes,
+        nodes={draw, minimum size=8mm, anchor=center, font=\large},
+        row sep=0pt,
+        column sep=-\pgflinewidth
+    },
+    pivot/.style={fill=orange!40},
+    greater/.style={fill=yellow!40},
+    pointer/.style={-Stealth, blue, thick},
+    info/.style={align=left, font=\small\itshape, text width=4cm}
+]
+
+\matrix[array] (step2) {
+   3 & 5 & |[greater]| 8 & 4 & |[pivot]| 6 \\
+};
+\node[info, right=of step2] (desc3) {Verifica A[j] $<$ Pivô, caso verdadeiro então faz swap com A[i]};
+\node[below=3mm of step2-1-2] (i2) {i};
+\node[below=3mm of step2-1-4] (j2) {j};
+\draw[pointer] (i2.north) -- (step2-1-2.south);
+\draw[pointer] (j2.north) -- (step2-1-4.south);
+
+\end{tikzpicture}
+\end{frame}
+
+% --- Slide 4: Passo 3 ---
+\begin{frame}[fragile]
+\frametitle{Passo 3: j $<$ pivô}
+\centering
+\begin{tikzpicture}[array/.style={
+        matrix of nodes,
+        nodes={draw, minimum size=8mm, anchor=center, font=\large},
+        row sep=0pt,
+        column sep=-\pgflinewidth
+    },
+    pivot/.style={fill=orange!40},
+    less/.style={fill=green!30},
+    pointer/.style={-Stealth, blue, thick},
+    swap/.style={-Stealth, red, thick, bend left=40},
+    info/.style={align=left, font=\small\itshape, text width=4cm}
+]
+
+\matrix[array] (step3) {
+   3 & |[less]| 4 & 8 & 5 & |[pivot]| 6 \\
+};
+\node[info, right=of step3] (desc4) {Incrementa i e j. \newline\newline Percorreu até final. Então swap (A[i],A[j]) $\rightarrow$ Troca o pivô com o elemento na posição i.)};
+\node[below=3mm of step3-1-3] (i3) {i};
+\node[below=3mm of step3-1-5] (j3) {j};
+\draw[pointer] (i3.north) -- (step3-1-3.south);
+\draw[pointer] (j3.north) -- (step3-1-5.south);
+
+\end{tikzpicture}
+\end{frame}
+
+% --- Slide 5: Passo Final (Troca com pivô) ---
+\begin{frame}[fragile]
+\frametitle{Passo Final: Troca com o pivô}
+\centering
+\begin{tikzpicture}[array/.style={
+        matrix of nodes,
+        nodes={draw, minimum size=8mm, anchor=center, font=\large},
+        row sep=0pt,
+        column sep=-\pgflinewidth
+    },
+    sorted/.style={fill=cyan!30},
+    info/.style={align=left, font=\small\itshape, text width=4cm},
+    swap/.style={-Stealth, red, thick, bend left=40}
+]
+
+\matrix[array] (step4) {
+   3 & 4 & |[sorted]| 6 & 5 & 8 \\
+};
+\node[info, right=of step4] (desc5) {Fim da partição. };
+
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Quick Sort: Análise}
+\begin{itemize}
+ \item O desempenho do Quick Sort depende criticamente da \textbf{escolha do pivô}.
+ \item O custo do particionamento é sempre linear, $\Theta(n)$.
+\end{itemize}
+\begin{description}
+ \item[Pior Caso] Ocorre quando o pivô é consistentemente o menor ou o maior elemento. Isso cria partições desbalanceadas (uma com 0 elementos e outra com $n-1$). A complexidade se torna $O(n^2)$.
+ \item[Melhor Caso] O pivô é sempre o elemento mediano, dividindo a lista em duas metades perfeitas. A complexidade é $O(n \log n)$.
+ \item[Caso Médio] Para entradas aleatórias, o desempenho é $O(n \log n)$.
+\end{description}
+
+\end{frame}
+
+
+\begin{frame}{Quick Sort: Análise}
+
+\begin{block}{Como evitar o pior caso?}
+ \begin{itemize}
+    \item \textbf{Pivô Aleatório}: Escolher um elemento aleatório como pivô torna o pior caso extremamente improvável.
+    \item \textbf{Mediana de Três}: Escolher o pivô como a mediana do primeiro, meio e último elemento da lista.
+ \end{itemize}
+\end{block}
+\end{frame}
+
+\subsection{Merge Sort (Ordenação por Intercalação)}
+\begin{frame}{Merge Sort: Estratégia}
+\begin{itemize}
+ \item Também utiliza a abordagem de \textbf{dividir para conquistar}.
+ \item O algoritmo segue três passos:
+ \begin{description}
+  \item[Dividir] O vetor é dividido recursivamente ao meio até que cada sub-vetor contenha apenas um elemento (que, por definição, está ordenado).
+  \item[Conquistar] Esta fase é implícita; os vetores de um elemento já estão "conquistados" (ordenados).
+  \item[Combinar] Os sub-vetores ordenados são \textbf{intercalados} (merged) de volta, de dois em dois, para produzir novos sub-vetores ordenados maiores, até que a lista inteira esteja combinada e ordenada.
+ \end{description}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{}
+\begin{center}
+\begin{tikzpicture}[
+    level 1/.style={sibling distance=5cm, level distance=1.0cm},
+    level 2/.style={sibling distance=2.0cm},
+    level 3/.style={sibling distance=1.0cm},
+    level 4/.style={sibling distance=1cm},
+    down/.style={->, >=Latex},
+    up/.style={<-, >=Latex},
+    arrnode/.style={font=\ttfamily}
+]
+\node[arrnode] {77 44 99 66 33 55 88 22}
+    child { node[arrnode] {77 44 99 66}
+        child { node[arrnode] {77 44}
+            child { node[arrnode] {77} }
+            child { node[arrnode] {44} }
+        }
+        child { node[arrnode] {99 66}
+            child { node[arrnode] {99} }
+            child { node[arrnode] {66} }
+        }
+    }
+    child { node[arrnode] {33 55 88 22}
+        child { node[arrnode] {33 55}
+            child { node[arrnode] {33} }
+            child { node[arrnode] {55} }
+        }
+        child { node[arrnode] {88 22}
+            child { node[arrnode] {88} }
+            child { node[arrnode] {22} }
+        }
+    };
+
+    % Merge arrows and results
+    \uncover<2->{
+    \node[arrnode, sorted] at (-3.75, -4.25) {44 77};
+    \node[arrnode, sorted] at (-1.25, -4.25) {66 99};
+    \node[arrnode, sorted] at (1.25, -4.25) {33 55};
+    \node[arrnode, sorted] at (3.75, -4.25) {22 88};
+    \draw[up, thick, blue] (-3.75, -4) -- (-3.75, -3.5);
+    \draw[up, thick, blue] (-1.25, -4) -- (-1.25, -3.5);
+    \draw[up, thick, blue] (1.25, -4) -- (1.25, -3.5);
+    \draw[up, thick, blue] (3.75, -4) -- (3.75, -3.5);
+    }
+
+    \uncover<3->{
+    \node[arrnode, sorted] at (-2.5, -5) {44 66 77 99};
+    \node[arrnode, sorted] at (2.5, -5) {22 33 55 88};
+    \draw[up, thick, blue] (-2.5, -4.75) -- (-2.5, -4.25);
+    \draw[up, thick, blue] (2.5, -4.75) -- (2.5, -4.25);
+    }
+    \uncover<4->{
+    \node[arrnode, sorted] at (0, -5.75) {22 33 44 55 66 77 88 99};
+    \draw[up, thick, blue] (0, -5.5) -- (0, -5);
+    }
+
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Merge Sort: Algoritmo}
+\begin{lstlisting}
+procedimento MergeSort(A, esq, dir)
+  se esq < dir entao
+    meio = floor((esq + dir) / 2)
+    MergeSort(A, esq, meio)
+    MergeSort(A, meio + 1, dir)
+    Intercalar(A, esq, meio, dir)
+  fim se
+fim procedimento
+\end{lstlisting}
+\end{frame}
+
+
+\begin{frame}[fragile]{}
+\begin{lstlisting}
+procedimento Intercalar(A, esq, meio, dir)
+  // Criar vetores temporarios
+  n1 = meio - esq + 1
+  n2 = dir - meio
+  E[0..n1-1], D[0..n2-1]
+  // Copiar dados para os vetores temporarios
+  para i de 0 ate n1-1 faca E[i] = A[esq + i]
+  para j de 0 ate n2-1 faca D[j] = A[meio + 1 + j]
+  // Intercalar de volta para A
+  i=0, j=0, k=esq
+  enquanto i < n1 e j < n2 faca
+    se E[i] <= D[j] entao A[k++] = E[i++]
+    senao A[k++] = D[j++]
+  fim enquanto
+  // Copiar o restante, se houver
+  enquanto i < n1 faca A[k++] = E[i++]
+  enquanto j < n2 faca A[k++] = D[j++]
+fim procedimento
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}{Merge Sort: Análise}
+\begin{block}{Análise de Complexidade}
+\begin{itemize}
+ \item A divisão do vetor em metades cria uma árvore de recursão de altura $\log_2 n$.
+ \item Em cada nível da árvore, a operação de intercalar processa todos os $n$ elementos.
+ \item Portanto, o tempo de execução é o produto da altura da árvore pelo trabalho em cada nível.
+ \item \textbf{Tempo de Execução}: $\Theta(n \log n)$ para \textbf{todos os casos} (melhor, médio e pior). O comportamento do algoritmo é consistente e não depende da ordem inicial dos dados.
+\end{itemize}
+\end{block}
+
+\end{frame}
+
+
+\begin{frame}{Merge Sort: Análise}
+
+\begin{block}{Análise de Espaço}
+\begin{itemize}
+    \item O ponto fraco do Merge Sort é sua necessidade de memória auxiliar.
+    \item A operação de intercalação requer um vetor temporário de tamanho $n$.
+    \item \textbf{Complexidade de Espaço}: $O(n)$.
+    \item \textbf{Estabilidade}: Sim, o Merge Sort é um algoritmo estável.
+\end{itemize}
+\end{block}
+\end{frame}
+
+\subsection{Trabalho 1 - Ordenação}
+\begin{frame}{Trabalho Prático}
+\begin{block}{Exercício 1: Comparando Algoritmos Elementares}
+\begin{itemize}
+ \item Implemente o \textbf{Insertion Sort} e o \textbf{Bubble Sort}.
+ \item Para cada um, meça o \textbf{tempo de execução} e o \textbf{número de movimentações/trocas}.
+ \item Execute os experimentos com 3 conjuntos de dados gerados aleatoriamente, com tamanhos:
+ \begin{itemize}
+ \item $n = 10.000$
+ \item $n = 50.000$
+ \item $n = 100.000$
+ \end{itemize}
+ \item Analise e compare os resultados.
+\end{itemize}
+\end{block}
+
+
+\end{frame}
+
+\begin{frame}{Trabalho Prático}
+
+
+\begin{block}{Exercício 2: Otimizando o Quick Sort}
+\begin{itemize}
+ \item Usando como base o algoritmo Quick Sort apresentado, implemente duas estratégias de escolha de pivô: \textbf{"mediana-de-três"} e \textbf{"versão aleatorizada"}.
+ \item Compare o desempenho (tempo de execução) das novas versões com a implementação original (pivô fixo) para um conjunto de dados aleatórios grande (e.g., $n = 1.000.000$).
+ \item Discuta se as estratégias melhoraram o desempenho e por quê.
+\end{itemize}
+\end{block}
+\end{frame}
+
+\section{Referências Bibliográficas}
+\begin{frame}[t,allowframebreaks]
+\frametitle{Referências}
+\begin{thebibliography}{9}
+    \bibitem{A03} Cormen, T. H., Leiserson, C. E., Rivest, R. L., \& Stein, C. (2009). \textit{Introduction to Algorithms (3rd ed.)}. MIT Press.
+    \bibitem{A04} Ascencio, A. F. G., \& Araujo, G. S. (2010). \textit{Estrutura de dados: Algoritmos, análise da complexidade e implementações em Java e C++}. Pearson Prentice Hall.
+    \bibitem{A06} Szwarcfiter, J. L., \& Markenzon, L. (2015). \textit{Estruturas de dados e seus algoritmos (3a ed.)}. LTC.
+    \bibitem{A01} Lee, K. D., \& Hubbard, S. (2015). Data Structures and Algorithms with Python. Springer.
+    \bibitem{A02} Hubbard, J. (2007). \textit{Schaum’s Outline of Data Structures with Java}. McGraw-Hill.
+\end{thebibliography}
+\end{frame}
+
+\section{}
+\setbeamertemplate{logo}{}
+\begin{frame}
+\titlepage
+\end{frame}
+
+\end{document}
