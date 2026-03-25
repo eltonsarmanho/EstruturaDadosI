@@ -57,7 +57,7 @@ Exemplos de uso de recursividade:
 
 pdflatex -interaction=nonstopmode -output-directory=/tmp Arquivo.tex && mv /tmp/Arquivo.pdf ../Pasta/ && echo "✓ PDF salvo!"
 
-pdflatex -interaction=nonstopmode -output-directory=/tmp ExerciciosComplexidade.tex && mv /tmp/ExerciciosComplexidade.pdf ../Slides/ && echo "✓ PDF salvo em Slides!"
+pdflatex -interaction=nonstopmode -output-directory=/tmp ExerciciosComplexidade.tex && mv /tmp/ExerciciosComplexidade.pdf ../Material/ && echo "✓ PDF salvo em Slides!"
 
 ## Contribuição
 
