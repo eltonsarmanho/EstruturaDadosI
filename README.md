@@ -53,6 +53,12 @@ Exemplos de uso de recursividade:
 *   **MDC.py:** Cálculo do máximo divisor comum (MDC).
 *   **Recursao.c:** Exemplos de recursão em C.
 
+## Comando Compilar
+
+pdflatex -interaction=nonstopmode -output-directory=/tmp Arquivo.tex && mv /tmp/Arquivo.pdf ../Pasta/ && echo "✓ PDF salvo!"
+
+pdflatex -interaction=nonstopmode -output-directory=/tmp ExerciciosComplexidade.tex && mv /tmp/ExerciciosComplexidade.pdf ../Slides/ && echo "✓ PDF salvo em Slides!"
+
 ## Contribuição
 
 Contribuições são bem-vindas! Sinta-se à vontade para abrir issues e pull requests.

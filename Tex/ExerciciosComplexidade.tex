@@ -1,0 +1,101 @@
+\documentclass[a4paper,11pt]{report}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts,marvosym}
+\usepackage{amssymb}
+\usepackage{amsthm,pxfonts,textcomp}
+\usepackage{mathrsfs} %permite o uso de letras trabalhadas
+\usepackage[top=3cm,left=3cm,right=2cm,bottom=3cm]{geometry} %margens
+\usepackage{caption}
+\usepackage[brazil]{babel}
+\usepackage{fontenc}
+\usepackage{graphicx}
+
+\usepackage{hyperref}
+\begin{document}
+ \thispagestyle{empty}
+ \pagestyle{empty}%remove numeração de página
+%Cabeçalho
+
+\begin{center}
+\begin{small}
+\textbf
+{Universidade Federal do Pará\\
+Campus Universitário de Cametá\\
+}\end{small}
+
+\end{center}
+%Caixa
+\begin{flushleft}
+\textbf{Professor (a): Elton Sarmanho}\\
+\smallskip 
+\textbf{Disciplina: Estrutura de dados I}\\
+\begin{center}
+ \textbf{Exercícios de ED I}
+\end{center}
+\end{flushleft}
+\section{Exercícios de Análise de Complexidade}
+
+\begin{enumerate}
+
+\item Calcule a complexidade de tempo dos seguintes algoritmos e justifique sua resposta:
+
+\begin{enumerate}
+ \item[a)] Escreva um algoritmo para encontrar o maior elemento de um array de tamanho $n$. Qual é a sua complexidade?
+ 
+ \item[b)] Escreva um algoritmo recursivo para encontrar o maior elemento de um array de tamanho $n$. Qual é a sua complexidade?
+ 
+ \item[c)] Escreva um algoritmo para calcular $x^{y}$ (exponenciação). Qual é a sua complexidade em função de $y$?
+ 
+ \item[d)] Escreva um algoritmo para verificar se uma palavra é um palíndromo. Qual é a sua complexidade?
+\end{enumerate}
+
+\end{enumerate}
+
+\section{Exercícios de Recursividade}
+
+\begin{enumerate}
+
+\item Identifique o \textbf{caso base} e o \textbf{passo indutivo} nas seguintes definições recursivas:
+
+\begin{enumerate}
+ \item[a)] $n! = \begin{cases} 1, & \text{se } n = 0 \\ n \cdot (n-1)!, & \text{se } n > 0 \end{cases}$
+ 
+ \item[b)] $f(n) = \begin{cases} 0, & \text{se } n = 0 \\ 1, & \text{se } n = 1 \\ f(n-1) + f(n-2), & \text{se } n > 1 \end{cases}$ (Fibonacci)
+ 
+ \item[c)] Implemente uma função recursiva que encontre o \textbf{menor elemento} de um array de tamanho $n$. Defina claramente o caso base e o passo indutivo.
+\end{enumerate}
+
+\item Analise a seguinte implementação recursiva e determine sua complexidade de tempo:
+\begin{enumerate}
+ \item[a)] Uma função recursiva que calcula $n!$. Quantas chamadas recursivas são feitas para $n = 5$?
+ 
+ \item[b)] Desenhe a \textbf{árvore de recurão} para o cálculo de $\text{Fibonacci}(4)$ e conte quantas vezes cada valor é calculado.
+ \end{enumerate}
+
+\item Implemente de forma recursiva:
+
+\begin{enumerate}
+ \item[a)] Um algoritmo que encontre todas as \textbf{substrings contíguas} de uma string de comprimento $n$. Quantas substrings existem?
+ 
+ \item[b)] Uma função recursiva para gerar a sequência definida por:
+  $$g_j = \begin{cases} j-1 & \text{se } 1 \leq j \leq k \\ g_{j-1} + g_{j-2} & \text{se } j > k \end{cases}$$
+  onde $k$ é um parâmetro dado.
+\end{enumerate}
+
+\item Problemas com recursividade:
+
+\begin{enumerate}
+ \item[a)] O que é \textbf{Stack Overflow}? Em que circunstâncias uma função recursiva pode causar esse problema?
+ 
+ \item[b)] Defina \textbf{tail recursion} (recursão de cauda) e explique como compiladores modernos a otimizam.
+ 
+ \item[c)] Uma função recursiva sem caso base ou com um caso base incorreto pode causar que tipo de problema?
+\end{enumerate}
+
+\end{enumerate}
+
+\section{Observações}
+
+
+\end{document}
